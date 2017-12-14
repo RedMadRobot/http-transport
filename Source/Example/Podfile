@@ -1,0 +1,7 @@
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '9.0'
+use_frameworks!
+
+target :Example do
+	pod 'HTTPTransport', :git => 'git@github.com:RedMadRobot/http-transport.git', :branch => 'master'
+end

@@ -1,0 +1,4 @@
+module CommonCryptoWrapper {
+    header "../HTTPTransport/HTTPTransport/Classes/Helper/Security/CommonCryptoWrapper.h"
+    export *
+}
