@@ -34,7 +34,7 @@ multithreading and synchronous networking drawbacks behind brackets.
 ## Installation: CocoaPods
 
 ```ruby
-pod 'HTTPTransport', :git => 'git@github.com:RedMadRobot/http-transport.git'
+pod 'HTTPTransport'
 ```
 
 <a name="actors" />
