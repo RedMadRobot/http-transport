@@ -16,6 +16,11 @@ import Alamofire
 public protocol HTTPTransportRetrierDelegate {
     
     /**
+     How many times request should be retried?
+     */
+    var maxAttemptsCount: Int { get }
+    
+    /**
      Failed request should be retried - yes or no?
      
      - Parameters:
@@ -71,6 +76,11 @@ open class HTTPTransportRetrier: RequestRetrier, RequestAdapter {
         with error: Error,
         completion: @escaping RequestRetryCompletion) {
 
+        guard request.retryCount < delegate.maxAttemptsCount else {
+            completion(false, 0)
+            return
+        }
+        
         var responseJSON: Any?
 
         if let data = request.delegate.data {
