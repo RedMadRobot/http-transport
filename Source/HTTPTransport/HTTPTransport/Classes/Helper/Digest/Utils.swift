@@ -77,10 +77,9 @@ func xor<T, V>(_ left: T, _ right: V) -> Array<UInt8> where T: RandomAccessColle
     let length = Swift.min(left.count, right.count)
 
     let buf = UnsafeMutablePointer<UInt8>.allocate(capacity: length)
-    buf.initialize(to: 0, count: length)
+    buf.initialize(repeating: 0, count: length)
     defer {
-        buf.deinitialize()
-        buf.deallocate(capacity: length)
+        buf.deinitialize(count: length)
     }
 
     // xor

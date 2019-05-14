@@ -19,39 +19,39 @@ open class HTTPTransport {
     /**
      Default timeout gap for synchronous calls (calculated from `URLRequest` timeout).
      */
-    open static let defaultSemaphoreTimeoutGap: TimeInterval = 3
+    public static let defaultSemaphoreTimeoutGap: TimeInterval = 3
 
     /**
      TCP/HTTP session between client and server.
      
      Includes security settings (see `Security`) and request retry strategy (see `HTTPTransportRetrier`).
      */
-    open let session: Session
+    public let session: Session
 
     /**
      Synchronous calls' timeout (counting from `URLRequest` timeout).
      */
-    open let semaphoreTimeoutGap: TimeInterval
+    public let semaphoreTimeoutGap: TimeInterval
 
     /**
      Collection of interceptors for outgoing HTTP requests.
      */
-    open let requestInterceptors: [HTTPRequestInterceptor]
+    public let requestInterceptors: [HTTPRequestInterceptor]
 
     /**
      Collection of interceptors for incoming HTTP responses.
      */
-    open let responseInterceptors: [HTTPResponseInterceptor]
+    public let responseInterceptors: [HTTPResponseInterceptor]
 
     /**
      Allow using Alamofire `validate()` method.
      */
-    open let useDefaultValidation: Bool
+    public let useDefaultValidation: Bool
     
     /**
      Precondition failure on network calls on main thread is disabled.
      */
-    open let allowNetworkingOnMainThread: Bool
+    public let allowNetworkingOnMainThread: Bool
 
     /**
      Initializer.

@@ -18,17 +18,17 @@ open class LogResponseInterceptor: HTTPResponseInterceptor {
     /**
      Output detail level.
      */
-    open let logLevel:           LogLevel
+    public let logLevel:           LogLevel
 
     /**
      Will print only headers in this list if `LogResponseInterceptor.isFilteringHeaders`
      */
-    open let headerFilter:       [Header]
+    public let headerFilter:       [Header]
 
     /**
      Will print only selected list of headers, see `LogResponseInterceptor.headerFilter`
      */
-    open let isFilteringHeaders: Bool
+    public let isFilteringHeaders: Bool
 
     /**
      Initializer.

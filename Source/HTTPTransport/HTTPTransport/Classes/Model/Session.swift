@@ -23,7 +23,7 @@ open class Session {
      
      Includes security settings and request retry strategy.
      */
-    open let manager: SessionManager
+    public let manager: SessionManager
 
     /**
      Initializer.

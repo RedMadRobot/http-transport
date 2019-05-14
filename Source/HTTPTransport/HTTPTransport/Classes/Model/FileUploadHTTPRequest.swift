@@ -19,7 +19,7 @@ open class FileUploadHTTPRequest: HTTPRequest {
     /**
      File data and metadata.
      */
-    open let fileMultipart: FileMultipart
+    public let fileMultipart: FileMultipart
 
     /**
      Initializer.

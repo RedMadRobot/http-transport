@@ -18,7 +18,7 @@ open class AddCookieInterceptor: HTTPRequestInterceptor {
     /**
      Cookie storage to get cookies from.
      */
-    open let cookieProvider: CookieProviding
+    public let cookieProvider: CookieProviding
 
     public init(
         cookieProvider: CookieProviding
@@ -87,7 +87,7 @@ private extension AddCookieInterceptor {
             }
 
         return rawCookies.keys
-            .flatMap { (name: String) -> HTTPCookie? in
+            .compactMap { (name: String) -> HTTPCookie? in
                 let value: String = rawCookies[name]!
                 return HTTPCookie(name: name, value: value)
             }

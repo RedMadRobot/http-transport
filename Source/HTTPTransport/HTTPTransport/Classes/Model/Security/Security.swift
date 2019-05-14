@@ -19,7 +19,7 @@ open class Security {
     /**
      Alamofire's `ServerTrustPolicyManager`.
      */
-    open let trustPolicyManager: ServerTrustPolicyManager
+    public let trustPolicyManager: ServerTrustPolicyManager
 
     /**
      Default SSL pinning policy: disabled.
