@@ -24,7 +24,7 @@ open class HTTPRequestParameters {
     /**
      Parameters' encoding. Default is JSON.
      */
-    open let encoding:   Encoding
+    public let encoding:   Encoding
 
     /**
      Initializer.

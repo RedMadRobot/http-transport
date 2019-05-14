@@ -17,7 +17,7 @@ open class DataUploadHTTPRequest: HTTPRequest {
     /**
      File data.
      */
-    open let data: Data
+    public let data: Data
 
     /**
      Initializer.

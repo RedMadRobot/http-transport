@@ -18,7 +18,7 @@ open class LogRequestInterceptor: HTTPRequestInterceptor {
     /**
      Output detail level.
      */
-    open let logLevel: LogLevel
+    public let logLevel: LogLevel
 
     /**
      Initializer.

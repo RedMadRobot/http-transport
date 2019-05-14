@@ -18,7 +18,7 @@ open class ReceivedCookieInterceptor: HTTPResponseInterceptor {
     /**
      Cookie storage to save cookies.
      */
-    open let cookieStorage: CookieStoring
+    public let cookieStorage: CookieStoring
 
     public init(
         cookieStorage: CookieStoring

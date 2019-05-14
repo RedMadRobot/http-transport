@@ -20,17 +20,17 @@ open class HTTPRequest: URLRequestConvertible {
     /**
      Default HTTP `URLRequest` timeout.
      */
-    open static let defaultTimeout: TimeInterval = 30
+    public static let defaultTimeout: TimeInterval = 30
 
     /**
      GET, POST, PUT, PATCH etc.
      */
-    open let httpMethod:           HTTPMethod
+    public let httpMethod:           HTTPMethod
 
     /**
      URL endpoint.
      */
-    open let endpoint:             String
+    public let endpoint:             String
 
     /**
      HTTP request headers map.
@@ -55,12 +55,12 @@ open class HTTPRequest: URLRequestConvertible {
     /**
      Custom session for this particular HTTP request.
      */
-    open let session:              Session?
+    public let session:              Session?
 
     /**
      Timeout for this particular HTTP request. Default is 30 seconds.
      */
-    open let timeout:              TimeInterval
+    public let timeout:              TimeInterval
 
     /**
      Initializer.

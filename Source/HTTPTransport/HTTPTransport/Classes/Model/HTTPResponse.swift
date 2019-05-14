@@ -18,22 +18,22 @@ open class HTTPResponse {
     /**
      Request status.
      */
-    open let httpStatus: HTTPStatusCode
+    public let httpStatus: HTTPStatusCode
 
     /**
      Collection of received headers.
      */
-    open let headers:    [String: String]
+    public let headers:    [String: String]
 
     /**
      Received body data, if any.
      */
-    open let body:       Data?
+    public let body:       Data?
 
     /**
      Corresponding HTTP request, which produced this response.
      */
-    open let request:    URLRequest?
+    public let request:    URLRequest?
 
     /**
      Initializer.
