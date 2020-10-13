@@ -18,13 +18,6 @@ public class HTTPCall<Request: DataRequest> {
     fileprivate let request: Request
 
     /**
-     Get current progress of HTTP call.
-     */
-    public var progress: Progress {
-        return request.progress
-    }
-
-    /**
      Cancel HTTP call.
      */
     public func cancel() {

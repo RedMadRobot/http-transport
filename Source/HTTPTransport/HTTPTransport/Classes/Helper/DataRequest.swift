@@ -18,13 +18,13 @@ import Foundation
  */
 extension DataRequest {
     
-    static func httpResponseSerializer(interceptors: [HTTPResponseInterceptor] = []) -> DataResponseSerializer<HTTPResponse> {
-        return DataResponseSerializer { (
+    static func httpResponseSerializer(interceptors: [HTTPResponseInterceptor] = []) -> CustomDataResponseSerializerProtocol<HTTPResponse> {
+        return CustomDataResponseSerializerProtocol { (
             request: URLRequest?,
             response: HTTPURLResponse?,
             data: Data?,
             error: Error?
-        ) -> Alamofire.Result<HTTPResponse> in
+        ) throws -> HTTPResponse in
             // COMPOSE A SINGLE RAW RESPONSE OBJECT
             let rawResponse: HTTPResponseInterceptor.RawResponse =
                 HTTPResponseInterceptor.RawResponse(request: request, response: response, data: data, error: error)
@@ -39,13 +39,13 @@ extension DataRequest {
 
             if let error = refinedRawResponse.error {
                 // GENERAL FAILURE
-                return Alamofire.Result<HTTPResponse>.failure(error)
+                throw error
             }
 
             guard let response: HTTPURLResponse = refinedRawResponse.response
             else {
                 // NETWORK FAILURE
-                return Alamofire.Result<HTTPResponse>.failure(NSError.noHTTPResponse)
+                throw NSError.noHTTPResponse
             }
             
             let httpResponse: HTTPResponse = HTTPResponse(
@@ -55,21 +55,20 @@ extension DataRequest {
                 request: refinedRawResponse.request
             )
 
-            return Alamofire.Result<HTTPResponse>.success(httpResponse)
+            return httpResponse
         }
     }
 
     @discardableResult
     func responseHTTP(
-        queue: DispatchQueue? = nil,
+        queue: DispatchQueue = .main,
         interceptors: [HTTPResponseInterceptor] = [],
-        completionHandler: @escaping (DataResponse<HTTPResponse>) -> Void
+        completionHandler: @escaping (AFDataResponse<HTTPResponse>) -> Void
     ) -> Self {
-        return response(
-            queue: queue,
-            responseSerializer: DataRequest.httpResponseSerializer(interceptors: interceptors),
-            completionHandler: completionHandler
-        )
+        let responseSerializer = DataRequest.httpResponseSerializer(interceptors: interceptors)
+        return response(queue: queue,
+                        responseSerializer: responseSerializer,
+                        completionHandler: completionHandler)
     }
     
 }

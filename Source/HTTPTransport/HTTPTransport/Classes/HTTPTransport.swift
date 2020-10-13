@@ -11,6 +11,8 @@ import Alamofire
 import Foundation
 
 
+public typealias ResultResponse = DataResponse<HTTPResponse, AFError>
+
 /**
  Performs synchronous HTTP(s) requests.
  */
@@ -22,11 +24,11 @@ open class HTTPTransport {
     public static let defaultSemaphoreTimeoutGap: TimeInterval = 3
 
     /**
-     TCP/HTTP session between client and server.
+     TCP/HTTP sessionManager between client and server.
      
      Includes security settings (see `Security`) and request retry strategy (see `HTTPTransportRetrier`).
      */
-    public let session: Session
+    public let sessionManager: SessionManager
 
     /**
      Synchronous calls' timeout (counting from `URLRequest` timeout).
@@ -66,7 +68,7 @@ open class HTTPTransport {
      */
     public convenience init(
         security: Security = Security.noEvaluation,
-        retrier: HTTPTransportRetrier? = nil,
+        interceptor: HTTPTransportRetrier? = nil,
         semaphoreTimeoutGap: TimeInterval = defaultSemaphoreTimeoutGap,
         requestInterceptors: [HTTPRequestInterceptor] = [],
         responseInterceptors: [HTTPResponseInterceptor] = [ClarifyErrorInterceptor()],
@@ -74,7 +76,7 @@ open class HTTPTransport {
         allowNetworkingOnMainThread: Bool = false
     ) {
         self.init(
-            session: type(of: self).createSession(security: security, retrier: retrier),
+            sessionManager: type(of: self).createSessionManager(security: security, interceptor: interceptor),
             semaphoreTimeout: semaphoreTimeoutGap,
             requestInterceptors: requestInterceptors,
             responseInterceptors: responseInterceptors,
@@ -86,7 +88,7 @@ open class HTTPTransport {
     /**
      Initializer.
      
-     - parameter session: TCP/HTTP session between client and server;
+     - parameter sessionManager: TCP/HTTP sessionManager between client and server;
      - parameter semaphoreTimeout: synchronous requests' timeout; default is `HTTPTransport.defaultSemaphoreTimeout`;
      - parameter requestInterceptors: collection of interceptors for outgoing HTTP requests;
      - parameter responseInterceptors: collection of interceptors for incoming HTTP responses;
@@ -94,14 +96,14 @@ open class HTTPTransport {
      - parameter allowNetworkingOnMainThread: do not throw errors on networking on the main thread; default is false.
      */
     public init(
-        session: Session,
+        sessionManager: SessionManager,
         semaphoreTimeout: TimeInterval = defaultSemaphoreTimeoutGap,
         requestInterceptors: [HTTPRequestInterceptor] = [],
         responseInterceptors: [HTTPResponseInterceptor] = [ClarifyErrorInterceptor()],
         useDefaultValidation: Bool = true,
         allowNetworkingOnMainThread: Bool = false
     ) {
-        self.session = session
+        self.sessionManager = sessionManager
         self.semaphoreTimeoutGap = semaphoreTimeout
         self.requestInterceptors = requestInterceptors
         self.responseInterceptors = responseInterceptors
@@ -122,21 +124,20 @@ open class HTTPTransport {
             preconditionFailure("Networking on the main thread")
         }
 
-        let session:        Session        = request.session ?? self.session
-        let sessionManager: SessionManager = session.manager
+        let sessionManager:        SessionManager        = request.sessionManager ?? self.sessionManager
+        let session: Session = sessionManager.manager
 
         var result:    Result            = Result.timeout
         let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
 
         request.with(interceptors: self.requestInterceptors)
 
-        sessionManager.startRequestsImmediately = true
         let dataRequest: DataRequest =
-            sessionManager
+            session
                 .request(request)
                 .responseHTTP(
                     interceptors: request.responseInterceptors + self.responseInterceptors
-                ) { (response: DataResponse<HTTPResponse>) in
+                ) { (response: ResultResponse) in
                     result = self.composeResult(fromResponse: response)
                     semaphore.signal()
                 }
@@ -163,7 +164,7 @@ open class HTTPTransport {
             preconditionFailure("Networking on the main thread")
         }
 
-        let sessionManager: SessionManager = self.session.manager
+        let session: Session = self.sessionManager.manager
 
         var result:    Result            = Result.timeout
         let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
@@ -176,11 +177,10 @@ open class HTTPTransport {
                 return interceptor.intercept(request: result)
             }
 
-        sessionManager.startRequestsImmediately = true
         let dataRequest: DataRequest =
-            sessionManager
+            session
                 .request(interceptedRequest)
-                .responseHTTP(interceptors: self.responseInterceptors) { (response: DataResponse<HTTPResponse>) in
+                .responseHTTP(interceptors: self.responseInterceptors) { (response: ResultResponse) in
                     result = self.composeResult(fromResponse: response)
                     semaphore.signal()
                 }
@@ -210,16 +210,15 @@ open class HTTPTransport {
             preconditionFailure("Networking on the main thread")
         }
 
-        let session:        Session        = request.session ?? self.session
-        let sessionManager: SessionManager = session.manager
+        let sessionManager:        SessionManager        = request.sessionManager ?? self.sessionManager
+        let session: Session = sessionManager.manager
 
-        var uploadResult: Result            = Result.timeout
+        var result: Result            = Result.timeout
         let semaphore:    DispatchSemaphore = DispatchSemaphore(value: 0)
 
         request.with(interceptors: self.requestInterceptors)
 
-        sessionManager.startRequestsImmediately = true
-        sessionManager.upload(
+        let uploadResult = session.upload(
             multipartFormData: { (formData: MultipartFormData) in
                 formData.append(
                     request.fileMultipart.fileData,
@@ -231,7 +230,7 @@ open class HTTPTransport {
                 let parameters: [String: Any] = request.parameters.reduce([:]) {
                     (result: [String: Any], parameters: HTTPRequestParameters) -> [String: Any] in
                     var result = result
-                    if case HTTPRequestParameters.Encoding.propertyList = parameters.encoding {
+                    if case HTTPRequestParameters.Encoding.json = parameters.encoding {
                         parameters.parameters.forEach { (key: String, value: Any) in
                             result[key] = value
                         }
@@ -245,31 +244,22 @@ open class HTTPTransport {
                     }
                 }
             },
-            with: request,
-            encodingCompletion: { (result: SessionManager.MultipartFormDataEncodingResult) in
-                switch result {
-                    case let .success(encodedRequest, _, _):
-                        encodedRequest.responseHTTP(
-                            interceptors: request.responseInterceptors + self.responseInterceptors
-                        ) { (response: DataResponse<HTTPResponse>) in
-                            uploadResult = self.composeResult(fromResponse: response)
-                            semaphore.signal()
-                        }
-
-                        if self.useDefaultValidation {
-                            encodedRequest.validate()
-                        }
-
-                    case let .failure(error):
-                        uploadResult = Result.failure(error: error as NSError)
-                        semaphore.signal()
-                }
-            }
+            with: request
         )
+        
+        uploadResult.responseHTTP(interceptors: request.responseInterceptors + self.responseInterceptors,
+                            completionHandler: { respons in
+                                result = self.composeResult(fromResponse: respons)
+                                semaphore.signal()
+                            })
+        
+        if self.useDefaultValidation {
+            uploadResult.validate()
+        }
         
         let gap: TimeInterval = request.timeout + self.semaphoreTimeoutGap
         _ = semaphore.wait(timeout: DispatchTime.now() + gap)
-        return uploadResult
+        return result
     }
 
     /**
@@ -282,18 +272,17 @@ open class HTTPTransport {
      */
     @discardableResult
     public func send(request: HTTPRequest, callback: @escaping Callback) -> HTTPCall<DataRequest> {
-        let session:        Session        = request.session ?? self.session
-        let sessionManager: SessionManager = session.manager
+        let sessionManager:        SessionManager        = request.sessionManager ?? self.sessionManager
+        let session: Session = sessionManager.manager
 
         request.with(interceptors: self.requestInterceptors)
 
-        sessionManager.startRequestsImmediately = true
         let dataRequest: DataRequest =
-            sessionManager
+            session
                 .request(request)
                 .responseHTTP(
                     interceptors: request.responseInterceptors + self.responseInterceptors
-                ) { (response: DataResponse<HTTPResponse>) in
+                ) { (response: ResultResponse) in
                     callback(self.composeResult(fromResponse: response))
                 }
 
@@ -314,7 +303,7 @@ open class HTTPTransport {
      */
     @discardableResult
     public func send(request: URLRequest, callback: @escaping Callback) -> HTTPCall<DataRequest> {
-        let sessionManager: SessionManager = self.session.manager
+        let session: Session = self.sessionManager.manager
 
         let interceptedRequest: URLRequest =
             self.requestInterceptors.reduce(request) { (
@@ -324,13 +313,12 @@ open class HTTPTransport {
                 return interceptor.intercept(request: result)
             }
 
-        sessionManager.startRequestsImmediately = true
         let dataRequest: DataRequest =
-            sessionManager
+            session
                 .request(interceptedRequest)
                 .responseHTTP(
                     interceptors: self.responseInterceptors
-                ) { (response: DataResponse<HTTPResponse>) in
+                ) { (response: ResultResponse) in
                     callback(self.composeResult(fromResponse: response))
                 }
 
@@ -356,13 +344,12 @@ open class HTTPTransport {
         multipartEncodingCallback: MultipartEncodingCallback? = nil,
         callback: @escaping Callback
     ) {
-        let session:        Session        = request.session ?? self.session
-        let sessionManager: SessionManager = session.manager
+        let sessionManager:        SessionManager        = request.sessionManager ?? self.sessionManager
+        let session: Session = sessionManager.manager
 
         request.with(interceptors: self.requestInterceptors)
 
-        sessionManager.startRequestsImmediately = true
-        sessionManager.upload(
+        let uploadResult = session.upload(
             multipartFormData: { (formData: MultipartFormData) in
                 formData.append(
                     request.fileMultipart.fileData,
@@ -374,7 +361,7 @@ open class HTTPTransport {
                 let parameters: [String: Any] = request.parameters.reduce([:]) {
                     (result: [String: Any], parameters: HTTPRequestParameters) -> [String: Any] in
                     var result = result
-                    if case HTTPRequestParameters.Encoding.propertyList = parameters.encoding {
+                    if case HTTPRequestParameters.Encoding.json = parameters.encoding {
                         parameters.parameters.forEach { (key: String, value: Any) in
                             result[key] = value
                         }
@@ -388,26 +375,16 @@ open class HTTPTransport {
                     }
                 }
             },
-            with: request,
-            encodingCompletion: { (result: SessionManager.MultipartFormDataEncodingResult) in
-                switch result {
-                    case let .success(encodedRequest, _, _):
-                        encodedRequest.responseHTTP(
-                            interceptors: request.responseInterceptors + self.responseInterceptors
-                        ) { (response: DataResponse<HTTPResponse>) in
-                            callback(self.composeResult(fromResponse: response))
-                        }
-
-                        if self.useDefaultValidation {
-                            encodedRequest.validate()
-                        }
-                        multipartEncodingCallback?(MultipartEncodingResult.success(call: UploadHTTPCall(request: encodedRequest)))
-
-                    case let .failure(error):
-                        multipartEncodingCallback?(MultipartEncodingResult.failure(error: error))
-                }
-            }
+            with: request
         )
+        uploadResult.responseHTTP(interceptors: request.responseInterceptors + self.responseInterceptors,
+                                  completionHandler: { response in
+                                    callback(self.composeResult(fromResponse: response))
+                                  })
+        
+        if self.useDefaultValidation {
+            uploadResult.validate()
+        }
     }
 
     /**
@@ -423,15 +400,13 @@ open class HTTPTransport {
             preconditionFailure("Networking on the main thread")
         }
         
-        let session: Session               = request.session ?? self.session
-        let sessionManager: SessionManager = session.manager
+        let sessionManager: SessionManager               = request.sessionManager ?? self.sessionManager
+        let session: Session = sessionManager.manager
         
         var result: Result               = Result.timeout
         let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
         
         request.with(interceptors: self.requestInterceptors)
-        
-        sessionManager.startRequestsImmediately = true
         
         var urlRequest: URLRequest!
         
@@ -450,11 +425,11 @@ open class HTTPTransport {
             }
         
         let uploadRequest: UploadRequest =
-            sessionManager
+            session
                 .upload(request.data, with: interceptedRequest)
                 .responseHTTP(
                     interceptors: request.responseInterceptors + self.responseInterceptors
-                ) { (response: DataResponse<HTTPResponse>) in
+                ) { (response: ResultResponse) in
                     result = self.composeResult(fromResponse: response)
                     semaphore.signal()
                 }
@@ -478,7 +453,7 @@ open class HTTPTransport {
      - returns: cancellable HTTPCall object, with observable progress.
      */
     public func send(data: Data, request: URLRequest, callback: @escaping Callback) -> HTTPCall<DataRequest> {
-        let sessionManager: SessionManager = self.session.manager
+        let session: Session = self.sessionManager.manager
         
         let interceptedRequest: URLRequest =
             self.requestInterceptors.reduce(request) { (
@@ -488,13 +463,12 @@ open class HTTPTransport {
                 return interceptor.intercept(request: result)
         }
         
-        sessionManager.startRequestsImmediately = true
         let uploadRequest: UploadRequest =
-            sessionManager
+            session
                 .upload(data, with: interceptedRequest)
                 .responseHTTP(
                     interceptors: self.responseInterceptors
-                ) { (response: DataResponse<HTTPResponse>) in
+                ) { (response: ResultResponse) in
                     callback(self.composeResult(fromResponse: response))
                 }
         
@@ -539,22 +513,23 @@ open class HTTPTransport {
 
 private extension HTTPTransport {
 
-    class func createSession(
+    class func createSessionManager(
         security: Security,
-        retrier: HTTPTransportRetrier?
-    ) -> Session {
-        let manager: SessionManager = SessionManager(serverTrustPolicyManager: security.trustPolicyManager)
-        manager.adapter = retrier
-        manager.retrier = retrier
-        return Session(manager: manager)
+        interceptor: HTTPTransportRetrier?
+    ) -> SessionManager {
+        let manager: Session = Session(startRequestsImmediately: true,
+                                       interceptor: interceptor,
+                                       serverTrustManager: security.trustPolicyManager)
+        return SessionManager(manager: manager)
     }
 
-    func composeResult(fromResponse response: DataResponse<HTTPResponse>) -> Result {
+    func composeResult(fromResponse response: ResultResponse) -> Result {
         switch response.result {
-            case .success(let httpResponse):
-                return Result.success(response: httpResponse)
-            case .failure(let error):
-                return Result.failure(error: error as NSError)
+        case let .success(httpResponse):
+            return Result.success(response: httpResponse)
+        
+        case let .failure(afError):
+            return Result.failure(error: afError as NSError)
         }
     }
 

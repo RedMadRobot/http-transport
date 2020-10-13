@@ -17,12 +17,12 @@ import Alamofire
  Simplifies SSL pinning policy configuration. Allows using host name patterns for chosing SSL certificate, see method 
  `serverTrustPolicy(forHost:)`.
  */
-open class TrustPolicyManager: ServerTrustPolicyManager {
+open class TrustPolicyManager: ServerTrustManager {
 
     /**
      Disables SSL pinning for all hosts with a dot "." in their host name.
      */
-    open class var noEvaluation: ServerTrustPolicyManager {
+    open class var noEvaluation: ServerTrustManager {
         return TrustPolicyManager(certificates: [Certificate.wildcard])
     }
 
@@ -32,17 +32,17 @@ open class TrustPolicyManager: ServerTrustPolicyManager {
      - parameter certificates: collection of `Certificate` objects (each is actually a pair "host: fingerprint").
      */
     public init(certificates: [Certificate]) {
-        var policies: [String: ServerTrustPolicy] = [:]
+        var evaluators: [String: ServerTrustEvaluating] = [:]
 
         certificates.forEach { (certificate: Certificate) in
-            policies[certificate.host] = certificate.asTrustPolicy
+            evaluators[certificate.host] = certificate.asTrustPolicy
         }
 
-        super.init(policies: policies)
+        super.init(evaluators: evaluators)
     }
 
-    override open func serverTrustPolicy(forHost host: String) -> ServerTrustPolicy? {
-        for (hostName, policy) in self.policies {
+    override open func serverTrustEvaluator(forHost host: String) -> ServerTrustEvaluating? {
+        for (hostName, policy) in self.evaluators {
             if host.contains(hostName) || hostName.contains(host) {
                 return policy
             }
@@ -86,26 +86,26 @@ open class TrustPolicyManager: ServerTrustPolicyManager {
         /**
          Convert `Certificate` to Alamofire's `ServerTrustPolicy`.
          */
-        public var asTrustPolicy: ServerTrustPolicy {
+        public var asTrustPolicy: ServerTrustEvaluating {
             switch self.fingerprint {
                 case Certificate.Fingerprint.sha1(let fingerprint):
                     let closure = createServerTrustCheckMethod(certificateFingerprintSHA1: fingerprint)
-                    return ServerTrustPolicy.customEvaluation(closure)
+                    return CustomServerTrustEvaluating(closure: closure)
 
                 case Certificate.Fingerprint.sha256(let fingerprint):
                     let closure = createServerTrustCheckMethod(certificateFingerprintSHA256: fingerprint)
-                    return ServerTrustPolicy.customEvaluation(closure)
+                    return CustomServerTrustEvaluating(closure: closure)
 
                 case Certificate.Fingerprint.publicKey(let fingerprint):
                     let closure = createServerTrustCheckMethod(certificatePublicKeyFingerprint: fingerprint)
-                    return ServerTrustPolicy.customEvaluation(closure)
+                    return CustomServerTrustEvaluating(closure: closure)
 
                 case Certificate.Fingerprint.debug:
                     let closure = createServerTrustDebugMethod()
-                    return ServerTrustPolicy.customEvaluation(closure)
+                    return CustomServerTrustEvaluating(closure: closure)
 
                 case Certificate.Fingerprint.disable:
-                    return ServerTrustPolicy.disableEvaluation
+                    return DisabledTrustEvaluator()
             }
         }
 

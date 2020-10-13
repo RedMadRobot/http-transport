@@ -18,61 +18,61 @@ public extension NSError {
     /**
      Error domain.
      */
-    public static let transportDomain: String = "Transport.error.domain"
+    static let transportDomain: String = "Transport.error.domain"
 
     /**
      Get request URL from `userInfo`, if any.
      */
-    public var url: String? {
+    var url: String? {
         return self.userInfo[UserInfoKey.url] as? String
     }
 
     /**
      Get response HTTP status code from `userInfo`, if any.
      */
-    public var httpStatusCode: HTTPStatusCode? {
+    var httpStatusCode: HTTPStatusCode? {
         return self.userInfo[UserInfoKey.httpStatus] as? HTTPStatusCode
     }
 
     /**
      Get response body as Data from `userInfo`, if any.
      */
-    public var responseBodyData: Data? {
+    var responseBodyData: Data? {
         return self.userInfo[UserInfoKey.responseBodyData] as? Data
     }
 
     /**
      Get response body as String from `userInfo`, if any.
      */
-    public var responseBodyString: String? {
+    var responseBodyString: String? {
         return self.userInfo[UserInfoKey.responseBodyString] as? String
     }
 
     /**
      Get response body as JSON object from `userInfo`, if any.
      */
-    public var responseBodyJSON: Any? {
+    var responseBodyJSON: Any? {
         return self.userInfo[UserInfoKey.responseBodyJSON]
     }
 
     /**
      Get error.code from body JSON, if any.
      */
-    public var responseBodyErrorCode: String? {
+    var responseBodyErrorCode: String? {
         return self.userInfo[UserInfoKey.responseBodyErrorCode] as? String
     }
 
     /**
      Get error.message from body JSON, if any.
      */
-    public var responseBodyErrorMessage: String? {
+    var responseBodyErrorMessage: String? {
         return self.userInfo[UserInfoKey.responseBodyErrorMessage] as? String
     }
 
     /**
      Get response body as dictionary from `userInfo`, if any.
      */
-    public var responseBodyJSONDictionary: [String: Any]? {
+    var responseBodyJSONDictionary: [String: Any]? {
         guard let json: Any = self.responseBodyJSON
         else { return nil }
 
@@ -86,7 +86,7 @@ public extension NSError {
     /**
      Request was interrupted because of the semaphore timeout.
      */
-    public static var timeout: NSError {
+    static var timeout: NSError {
         return NSError(
             domain: transportDomain,
             code: NSURLErrorTimedOut,
@@ -99,7 +99,7 @@ public extension NSError {
     /**
      Alamofire returned no HTTP response and no error.
      */
-    public static var noHTTPResponse: NSError {
+    static var noHTTPResponse: NSError {
         return NSError(
             domain: transportDomain,
             code: TransportErrorCode.noHTTPResponse.rawValue,
@@ -112,7 +112,7 @@ public extension NSError {
     /**
      Wrong URL format.
      */
-    public static func cannotInitURL(urlString: String) -> NSError {
+    static func cannotInitURL(urlString: String) -> NSError {
         return NSError(
             domain: transportDomain,
             code: TransportErrorCode.cannotInitURLWithString.rawValue,
@@ -126,7 +126,7 @@ public extension NSError {
     /**
      Transport-related error codes.
      */
-    public enum TransportErrorCode: Int {
+    enum TransportErrorCode: Int {
         case cannotInitURLWithString = 9000
         case noHTTPResponse          = 9001
     }
@@ -134,7 +134,7 @@ public extension NSError {
     /**
      Transport-related `userInfo` keys.
      */
-    public struct UserInfoKey {
+    struct UserInfoKey {
         public static let url:                      String = "NSError.userInfo.key.url"
         public static let httpStatus:               String = "NSError.userInfo.key.httpStatus"
         public static let responseBodyData:         String = "NSError.userInfo.key.responseBodyData"

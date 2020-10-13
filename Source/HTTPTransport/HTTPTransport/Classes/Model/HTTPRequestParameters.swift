@@ -74,11 +74,6 @@ open class HTTPRequestParameters {
         case url
 
         /**
-         Key=value-encoded body.
-         */
-        case propertyList
-
-        /**
          Your custom format.
          */
         case custom(encode: EncodeFunction)
@@ -90,7 +85,6 @@ open class HTTPRequestParameters {
             switch self {
                 case .url: return URLEncoding.default
                 case .json: return JSONEncoding.default
-                case .propertyList: return PropertyListEncoding.default
                 case .custom(let encodeFunction): return CustomEncoder(encodeFunction: encodeFunction)
             }
         }

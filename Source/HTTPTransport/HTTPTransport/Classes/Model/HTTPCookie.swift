@@ -18,7 +18,7 @@ public extension HTTPCookie {
     private static let stubURLAddress: String = "http://localhost"
     private static let stubPath:       String = "/"
 
-    public convenience init(
+    convenience init(
         name: String,
         value: String
     ) {
