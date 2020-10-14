@@ -90,19 +90,19 @@ open class TrustPolicyManager: ServerTrustManager {
             switch self.fingerprint {
                 case Certificate.Fingerprint.sha1(let fingerprint):
                     let closure = createServerTrustCheckMethod(certificateFingerprintSHA1: fingerprint)
-                    return CustomServerTrustEvaluating(closure: closure)
+                    return ClosureServerTrustEvaluating(closure: closure)
 
                 case Certificate.Fingerprint.sha256(let fingerprint):
                     let closure = createServerTrustCheckMethod(certificateFingerprintSHA256: fingerprint)
-                    return CustomServerTrustEvaluating(closure: closure)
+                    return ClosureServerTrustEvaluating(closure: closure)
 
                 case Certificate.Fingerprint.publicKey(let fingerprint):
                     let closure = createServerTrustCheckMethod(certificatePublicKeyFingerprint: fingerprint)
-                    return CustomServerTrustEvaluating(closure: closure)
+                    return ClosureServerTrustEvaluating(closure: closure)
 
                 case Certificate.Fingerprint.debug:
                     let closure = createServerTrustDebugMethod()
-                    return CustomServerTrustEvaluating(closure: closure)
+                    return ClosureServerTrustEvaluating(closure: closure)
 
                 case Certificate.Fingerprint.disable:
                     return DisabledTrustEvaluator()

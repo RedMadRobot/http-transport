@@ -227,20 +227,11 @@ open class HTTPTransport {
                     mimeType: request.fileMultipart.mimeType.value
                 )
 
-                let parameters: [String: Any] = request.parameters.reduce([:]) {
-                    (result: [String: Any], parameters: HTTPRequestParameters) -> [String: Any] in
-                    var result = result
-                    if case HTTPRequestParameters.Encoding.json = parameters.encoding {
-                        parameters.parameters.forEach { (key: String, value: Any) in
-                            result[key] = value
+                request.parameters.forEach{
+                    for (key, value) in $0.parameters {
+                        if let value = value as? String {
+                            formData.append(value.data(using: String.Encoding.utf8)!, withName: key)
                         }
-                    }
-                    return result
-                }
-
-                for (key, value) in parameters {
-                    if let value = value as? String {
-                        formData.append(value.data(using: String.Encoding.utf8)!, withName: key)
                     }
                 }
             },
@@ -358,22 +349,15 @@ open class HTTPTransport {
                     mimeType: request.fileMultipart.mimeType.value
                 )
 
-                let parameters: [String: Any] = request.parameters.reduce([:]) {
-                    (result: [String: Any], parameters: HTTPRequestParameters) -> [String: Any] in
-                    var result = result
-                    if case HTTPRequestParameters.Encoding.json = parameters.encoding {
-                        parameters.parameters.forEach { (key: String, value: Any) in
-                            result[key] = value
+                request.parameters.forEach{
+                    for (key, value) in $0.parameters {
+                        if let value = value as? String {
+                            formData.append(value.data(using: String.Encoding.utf8)!, withName: key)
                         }
                     }
-                    return result
                 }
-
-                for (key, value) in parameters {
-                    if let value = value as? String {
-                        formData.append(value.data(using: String.Encoding.utf8)!, withName: key)
-                    }
-                }
+                
+                
             },
             with: request
         )

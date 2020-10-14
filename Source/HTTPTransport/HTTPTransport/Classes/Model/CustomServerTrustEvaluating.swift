@@ -1,10 +1,10 @@
 import Alamofire
 
-enum CustomEvaluationError: Error {
-    case invalidEvaluation
-}
-
-public final class CustomServerTrustEvaluating: ServerTrustEvaluating {
+public final class ClosureServerTrustEvaluating: ServerTrustEvaluating {
+    
+    enum CustomEvaluationError: Error {
+        case conditionNotPassed
+    }
     
     let closure: ServerTrustCheckMethod
     
@@ -13,7 +13,7 @@ public final class CustomServerTrustEvaluating: ServerTrustEvaluating {
     }
     public func evaluate(_ trust: SecTrust, forHost host: String) throws {
         guard closure(trust,host) else {
-            throw AFError.serverTrustEvaluationFailed(reason: AFError.ServerTrustFailureReason.customEvaluationFailed(error: CustomEvaluationError.invalidEvaluation))
+            throw AFError.serverTrustEvaluationFailed(reason: AFError.ServerTrustFailureReason.customEvaluationFailed(error: CustomEvaluationError.conditionNotPassed))
         }
     }
 }
