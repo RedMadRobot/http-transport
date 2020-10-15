@@ -51,6 +51,8 @@
 		51EDF51C1EA1170D0013FBEF /* NSError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EDF51B1EA1170D0013FBEF /* NSError.swift */; };
 		51EDF51E1EA117660013FBEF /* FileMultipart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EDF51D1EA117660013FBEF /* FileMultipart.swift */; };
 		51EDF5201EA11B010013FBEF /* DataRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EDF51F1EA11B010013FBEF /* DataRequest.swift */; };
+		5E15085525361E0B005FB406 /* CustomServerTrustEvaluating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E15085325361E0B005FB406 /* CustomServerTrustEvaluating.swift */; };
+		5E15085625361E0B005FB406 /* CustomDataResponseSerializerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E15085425361E0B005FB406 /* CustomDataResponseSerializerProtocol.swift */; };
 		AA19EE981F67E5830066B2A4 /* DataUploadHTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA19EE971F67E5830066B2A4 /* DataUploadHTTPRequest.swift */; };
 		BAA520B178D7C85EF42A7794 /* HTTPRequestParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA52F945A55184D494340C8 /* HTTPRequestParameters.swift */; };
 		BAA520C82F17B81359E5F127 /* ReceivedCookieInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA52AA42BC3A92B8CC510E8 /* ReceivedCookieInterceptor.swift */; };
@@ -122,6 +124,8 @@
 		51EDF51B1EA1170D0013FBEF /* NSError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSError.swift; sourceTree = "<group>"; };
 		51EDF51D1EA117660013FBEF /* FileMultipart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileMultipart.swift; sourceTree = "<group>"; };
 		51EDF51F1EA11B010013FBEF /* DataRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataRequest.swift; sourceTree = "<group>"; };
+		5E15085325361E0B005FB406 /* CustomServerTrustEvaluating.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomServerTrustEvaluating.swift; sourceTree = "<group>"; };
+		5E15085425361E0B005FB406 /* CustomDataResponseSerializerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomDataResponseSerializerProtocol.swift; sourceTree = "<group>"; };
 		AA19EE971F67E5830066B2A4 /* DataUploadHTTPRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataUploadHTTPRequest.swift; sourceTree = "<group>"; };
 		AAD8003B7963CEFD2D4E869C /* Pods_HTTPTransportTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HTTPTransportTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAA52316B9ABF0502EA8D5E3 /* ClarifyErrorInterceptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClarifyErrorInterceptor.swift; sourceTree = "<group>"; };
@@ -259,6 +263,8 @@
 		51EDF4F91EA106050013FBEF /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				5E15085425361E0B005FB406 /* CustomDataResponseSerializerProtocol.swift */,
+				5E15085325361E0B005FB406 /* CustomServerTrustEvaluating.swift */,
 				AA19EE971F67E5830066B2A4 /* DataUploadHTTPRequest.swift */,
 				51EDF51D1EA117660013FBEF /* FileMultipart.swift */,
 				51EDF5151EA112770013FBEF /* FileUploadHTTPRequest.swift */,
@@ -560,6 +566,7 @@
 				512CF3271FE8147A003F61AD /* BatchedCollection.swift in Sources */,
 				512CF3331FE81808003F61AD /* Collection+Extension.swift in Sources */,
 				512CF31B1FE8135B003F61AD /* DigestType.swift in Sources */,
+				5E15085625361E0B005FB406 /* CustomDataResponseSerializerProtocol.swift in Sources */,
 				510768161EA4F26C0061FC4F /* HTTPCookie.swift in Sources */,
 				51EDF51C1EA1170D0013FBEF /* NSError.swift in Sources */,
 				BAA525F363594620CA30CB81 /* AddCookieInterceptor.swift in Sources */,
@@ -569,6 +576,7 @@
 				512CF3311FE817D3003F61AD /* Generics.swift in Sources */,
 				BAA52E5C95966700FD3FD3C4 /* MIMEType.swift in Sources */,
 				BAA52BAC269BCDA57AEBB42F /* HTTPCall.swift in Sources */,
+				5E15085525361E0B005FB406 /* CustomServerTrustEvaluating.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

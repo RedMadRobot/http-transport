@@ -16,22 +16,22 @@ import Foundation
  
  Includes security settings (see `Security`) and request retry strategy (see `HTTPTransportRetrier`).
  */
-open class Session {
+open class SessionManager {
 
     /**
-     `SessionManager` stands for URLSession reusage.
+     `Session` stands for URLSession reusage.
      
      Includes security settings and request retry strategy.
      */
-    public let manager: SessionManager
+    public let manager: Session
 
     /**
      Initializer.
      
-     - parameter manager: Alamofire's `SessionManager`.
+     - parameter manager: Alamofire's `Session`.
      */
     public init(
-        manager: SessionManager
+        manager: Session
     ) {
         self.manager = manager
     }
@@ -44,18 +44,18 @@ open class Session {
     }
 
     /**
-     Initializer for cases, if `SessionManager` couldn't be reused.
+     Initializer for cases, if `Session` couldn't be reused.
      
      - parameter Security: SSL pinning policy;
      - parameter retrier: HTTP request retry policy.
      */
     public init(
         security: Security,
-        retrier: HTTPTransportRetrier? = nil
+        interceptor: HTTPTransportRetrier? = nil
     ) {
-        self.manager = SessionManager(serverTrustPolicyManager: security.trustPolicyManager)
-        self.manager.adapter = retrier
-        self.manager.retrier = retrier
+        self.manager = Session(startRequestsImmediately: true,
+                               interceptor: interceptor,
+                               serverTrustManager: security.trustPolicyManager)
     }
 
 }
