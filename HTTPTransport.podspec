@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "HTTPTransport"
-  s.version      = "4.1.0"
+  s.version      = "4.2.0"
   s.summary      = "RedMadRobot HTTP transport library"
   s.description  = "Based on Alamofire. Implements synchronous transport"
   s.homepage     = "https://github.com/RedMadRobot/http-transport"
