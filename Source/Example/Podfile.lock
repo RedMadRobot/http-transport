@@ -1,29 +1,29 @@
 PODS:
-  - Alamofire (4.8.2)
-  - HTTPTransport (4.0.0):
-    - Alamofire (~> 4.6)
+  - Alamofire (5.2.2)
+  - HTTPTransport (4.2.0):
+    - Alamofire
 
 DEPENDENCIES:
-  - "HTTPTransport (from `git@github.com:RedMadRobot/http-transport.git`, branch `master`)"
+  - "HTTPTransport (from `git@github.com:BoykoMihail/http-transport.git`, branch `master`)"
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs:
     - Alamofire
 
 EXTERNAL SOURCES:
   HTTPTransport:
     :branch: master
-    :git: "git@github.com:RedMadRobot/http-transport.git"
+    :git: "git@github.com:BoykoMihail/http-transport.git"
 
 CHECKOUT OPTIONS:
   HTTPTransport:
-    :commit: 5d571642f6e039bf6a70531cfc59f156717050e6
-    :git: "git@github.com:RedMadRobot/http-transport.git"
+    :commit: 78654b1faf37a1f8bd0f6f6d7207a2dd88dde88b
+    :git: "git@github.com:BoykoMihail/http-transport.git"
 
 SPEC CHECKSUMS:
-  Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
-  HTTPTransport: c969418a4248dedbff33345dbaedc027938a938c
+  Alamofire: 814429acc853c6c54ff123fc3d2ef66803823ce0
+  HTTPTransport: 5c1b639e0544c6522f30f7e06b163b1caf12fe22
 
-PODFILE CHECKSUM: 3967b908c637e589960736008b01c1cb140c092d
+PODFILE CHECKSUM: b58bbf5d22cc4f7c6234862dc16e1594f94f136b
 
-COCOAPODS: 1.6.1
+COCOAPODS: 1.9.3
