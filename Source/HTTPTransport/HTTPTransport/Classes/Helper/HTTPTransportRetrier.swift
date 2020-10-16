@@ -77,21 +77,20 @@ open class HTTPTransportRetrier: RequestInterceptor {
     }
     
     public func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
-         guard request.retryCount < delegate.maxAttemptsCount
-         else {
+        guard request.retryCount < delegate.maxAttemptsCount else {
             completion(.doNotRetry)
-             return
-         }
+            return
+        }
 
-         var responseJSON: Any?
+        var responseJSON: Any?
 
         
         if let data = (request as? DataRequest)?.data  {
-             responseJSON = try? JSONSerialization.jsonObject(with: data, options: .allowFragments)
-         }
+            responseJSON = try? JSONSerialization.jsonObject(with: data, options: .allowFragments)
+        }
 
-         if let response = request.task?.response as? HTTPURLResponse,
-            delegate.shouldRetry(response, responseJSON: responseJSON, error: error) {
+        if let response = request.task?.response as? HTTPURLResponse,
+           delegate.shouldRetry(response, responseJSON: responseJSON, error: error) {
 
             requestsToRetry.append(completion)
 
@@ -109,10 +108,9 @@ open class HTTPTransportRetrier: RequestInterceptor {
                     self.requestsToRetry.removeAll()
                 }
             }
-         } else {
+        } else {
             completion(.doNotRetry)
-         }
+        }
 
     }
-
 }
