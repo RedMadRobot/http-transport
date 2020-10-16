@@ -513,7 +513,7 @@ private extension HTTPTransport {
             return Result.success(response: httpResponse)
         
         case let .failure(afError):
-            return Result.failure(error: afError as NSError)
+            return Result.failure(error: afError.underlyingError as NSError? ?? afError as NSError)
         }
     }
 

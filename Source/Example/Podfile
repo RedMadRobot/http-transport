@@ -3,5 +3,5 @@ platform :ios, '10.0'
 use_frameworks!
 
 target :Example do
-	pod 'HTTPTransport', :git => 'git@github.com:BoykoMihail/http-transport.git', :branch => 'master'
+	pod 'HTTPTransport', :path => '../..'
 end

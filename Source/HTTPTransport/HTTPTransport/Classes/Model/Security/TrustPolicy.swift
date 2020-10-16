@@ -157,14 +157,15 @@ public func hexadecimalString(_ data: Data) -> String {
 
 public func certificateSHA1(_ certificate: SecCertificate) -> Data {
     let data:    CFData = SecCertificateCopyData(certificate)
-    let outData: Data   = Data(bytes: UnsafePointer<UInt8>(CFDataGetBytePtr(data)), count: CFDataGetLength(data)).sha1()
+    let inData: Data   = Data(bytes: UnsafePointer<UInt8>(CFDataGetBytePtr(data)), count: CFDataGetLength(data))
+    let outData = inData.algoWith(algoType: .sha1)
     return outData
 }
 
-
 public func certificateSHA256(_ certificate: SecCertificate) -> Data {
     let data:    CFData = SecCertificateCopyData(certificate)
-    let outData: Data   = Data(bytes: UnsafePointer<UInt8>(CFDataGetBytePtr(data)), count: CFDataGetLength(data)).sha256()
+    let inData: Data   = Data(bytes: UnsafePointer<UInt8>(CFDataGetBytePtr(data)), count: CFDataGetLength(data))
+    let outData = inData.algoWith(algoType: .sha256)
     return outData
 }
 

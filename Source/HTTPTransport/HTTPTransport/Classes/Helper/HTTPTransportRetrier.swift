@@ -93,25 +93,26 @@ open class HTTPTransportRetrier: RequestInterceptor {
          if let response = request.task?.response as? HTTPURLResponse,
             delegate.shouldRetry(response, responseJSON: responseJSON, error: error) {
 
-             requestsToRetry.append(completion)
+            requestsToRetry.append(completion)
 
-             if !isRefreshing {
-                 isRefreshing = true
+            if !isRefreshing {
+                isRefreshing = true
 
-                 delegate.refreshForRetrieve { [weak self] success in
-                     guard let `self` = self
-                     else { return }
+                delegate.refreshForRetrieve { [weak self] success in
+                    guard let self = self else {
+                        return
+                    }
 
-                     self.isRefreshing = false
+                    self.isRefreshing = false
 
                     self.requestsToRetry.forEach { $0(.retry) }
-                     self.requestsToRetry.removeAll()
-                 }
-             }
+                    self.requestsToRetry.removeAll()
+                }
+            }
          } else {
             completion(.doNotRetry)
          }
 
-     }
+    }
 
 }
