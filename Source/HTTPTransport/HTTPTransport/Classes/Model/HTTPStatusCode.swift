@@ -410,27 +410,27 @@ public enum HTTPStatusCode: Int {
 public extension HTTPStatusCode {
 
     /// Informational - Request received, continuing process.
-    public var isInformational: Bool {
+    var isInformational: Bool {
         return isIn(range: 100...199)
     }
 
     /// Success - The action was successfully received, understood, and accepted.
-    public var isSuccess:       Bool {
+    var isSuccess:       Bool {
         return isIn(range: 200...299)
     }
 
     /// Redirection - Further action must be taken in order to complete the request.
-    public var isRedirection:   Bool {
+    var isRedirection:   Bool {
         return isIn(range: 300...399)
     }
 
     /// Client Error - The request contains bad syntax or cannot be fulfilled.
-    public var isClientError:   Bool {
+    var isClientError:   Bool {
         return isIn(range: 400...499)
     }
 
     /// Server Error - The server failed to fulfill an apparently valid request.
-    public var isServerError:   Bool {
+    var isServerError:   Bool {
         return isIn(range: 500...599)
     }
 
@@ -445,7 +445,7 @@ public extension HTTPStatusCode {
 public extension HTTPStatusCode {
 
     /// - returns: a localized string suitable for displaying to users that describes the specified status code.
-    public var localizedReasonPhrase: String {
+    var localizedReasonPhrase: String {
         return HTTPURLResponse.localizedString(forStatusCode: rawValue)
     }
 
@@ -468,7 +468,7 @@ extension HTTPStatusCode: CustomDebugStringConvertible, CustomStringConvertible 
 public extension HTTPStatusCode {
 
     /// Obtains a possible status code from an optional HTTP URL response.
-    public init?(httpURLResponse: HTTPURLResponse?) {
+    init?(httpURLResponse: HTTPURLResponse?) {
         guard let statusCodeValue = httpURLResponse?.statusCode
         else {
             return nil
@@ -477,13 +477,13 @@ public extension HTTPStatusCode {
     }
 
     /// Obtains a status code from an HTTP URL response.
-    public init(httpURLResponse: HTTPURLResponse) {
+    init(httpURLResponse: HTTPURLResponse) {
         let statusCodeValue = httpURLResponse.statusCode
         self.init(rawValue: statusCodeValue)!
     }
 
     /// This is declared as it's not automatically picked up by the complier for the above init
-    public init?(_ rawValue: Int) {
+    init?(_ rawValue: Int) {
         guard let value = HTTPStatusCode(rawValue: rawValue)
         else {
             return nil

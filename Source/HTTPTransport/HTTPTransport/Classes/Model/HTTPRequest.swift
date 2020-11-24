@@ -12,7 +12,7 @@ import Foundation
 
 
 /**
- HTTP request with HTTP verb, URL, headers, body and non-functional parameters, like `Session`, `ParameterEncoding`, timeout and
+ HTTP request with HTTP verb, URL, headers, body and non-functional parameters, like `SessionManager`, `ParameterEncoding`, timeout and
  request interceptors.
  */
 open class HTTPRequest: URLRequestConvertible {
@@ -55,7 +55,7 @@ open class HTTPRequest: URLRequestConvertible {
     /**
      Custom session for this particular HTTP request.
      */
-    public let session:              Session?
+    public let sessionManager:              SessionManager?
 
     /**
      Timeout for this particular HTTP request. Default is 30 seconds.
@@ -70,7 +70,7 @@ open class HTTPRequest: URLRequestConvertible {
      - parameter headers: map of HTTP headers; default is empty map;
      - parameter parameters: request parameters; default is empty list;
      - parameter interceptors: request interceptors; default is empty array;
-     - parameter session: `Session` for this particular URLRequest; default is `None`, transport-defined;
+     - parameter sessionManager: `SessionManager` for this particular URLRequest; default is `None`, transport-defined;
      - parameter timeout: `URLRequest` timeout;
      - parameter base: base `HTTPRequest` to inherit parameters from; default is `None`.
      */
@@ -81,7 +81,7 @@ open class HTTPRequest: URLRequestConvertible {
         parameters: [HTTPRequestParameters] = [],
         requestInterceptors: [HTTPRequestInterceptor] = [],
         responseInterceptors: [HTTPResponseInterceptor] = [],
-        session: Session? = nil,
+        sessionManager: SessionManager? = nil,
         timeout: TimeInterval? = nil,
         base: HTTPRequest? = nil
     ) {
@@ -117,7 +117,7 @@ open class HTTPRequest: URLRequestConvertible {
         self.requestInterceptors = mergedRequestInterceptors
         self.responseInterceptors = mergedResponseInterceptors
 
-        self.session = session ?? base?.session
+        self.sessionManager = sessionManager ?? base?.sessionManager
         self.timeout = timeout ?? base?.timeout ?? HTTPRequest.defaultTimeout
     }
 
@@ -278,7 +278,6 @@ private extension HTTPRequest {
     ) -> [HTTPRequestParameters] {
         var jsonParameters:   [String: Any]           = [:]
         var urlParameters:    [String: Any]           = [:]
-        var plistParameters:  [String: Any]           = [:]
         var customParameters: [HTTPRequestParameters] = []
 
         // PUT BASE PARAMETERS INTO CORRESPONDING BASKETS
@@ -292,11 +291,6 @@ private extension HTTPRequest {
                 case HTTPRequestParameters.Encoding.url:
                     for baseKey in baseParameters.parameters.keys {
                         urlParameters[baseKey] = baseParameters.parameters[baseKey]
-                    }
-
-                case HTTPRequestParameters.Encoding.propertyList:
-                    for baseKey in baseParameters.parameters.keys {
-                        plistParameters[baseKey] = baseParameters.parameters[baseKey]
                     }
 
                 case HTTPRequestParameters.Encoding.custom:
@@ -317,11 +311,6 @@ private extension HTTPRequest {
                         urlParameters[baseKey] = parameters.parameters[baseKey]
                     }
 
-                case HTTPRequestParameters.Encoding.propertyList:
-                    for baseKey in parameters.parameters.keys {
-                        plistParameters[baseKey] = parameters.parameters[baseKey]
-                    }
-
                 case HTTPRequestParameters.Encoding.custom:
                     customParameters.append(parameters)
             }
@@ -335,12 +324,6 @@ private extension HTTPRequest {
 
         if !urlParameters.isEmpty {
             result.append(HTTPRequestParameters(parameters: urlParameters, encoding: HTTPRequestParameters.Encoding.url))
-        }
-
-        if !plistParameters.isEmpty {
-            result.append(
-                HTTPRequestParameters(parameters: plistParameters, encoding: HTTPRequestParameters.Encoding.propertyList)
-            )
         }
 
         result += customParameters

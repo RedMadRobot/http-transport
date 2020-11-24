@@ -29,7 +29,7 @@ open class FileUploadHTTPRequest: HTTPRequest {
      - parameter headers: map of HTTP headers; default is empty map;
      - parameter parameters: request parameters; default is empty list;
      - parameter interceptors: request interceptors; default is empty array;
-     - parameter session: `Session` for this particular URLRequest; default is `None`, transport-defined;
+     - parameter sessionManager: `SessionManager` for this particular URLRequest; default is `None`, transport-defined;
      - parameter timeout: `URLRequest` timeout;
      - parameter fileData: file data;
      - parameter partName: multipart part name for file data;
@@ -44,7 +44,7 @@ open class FileUploadHTTPRequest: HTTPRequest {
         parameters: [HTTPRequestParameters] = [],
         requestInterceptors: [HTTPRequestInterceptor] = [],
         responseInterceptors: [HTTPResponseInterceptor] = [],
-        session: Session? = nil,
+        sessionManager: SessionManager? = nil,
         timeout: TimeInterval? = nil,
         fileData: Data,
         partName: String,
@@ -59,7 +59,7 @@ open class FileUploadHTTPRequest: HTTPRequest {
             parameters: parameters,
             requestInterceptors: requestInterceptors,
             responseInterceptors: responseInterceptors,
-            session: session,
+            sessionManager: sessionManager,
             timeout: timeout,
             file: FileMultipart(fileData: fileData, fileName: fileName, mimeType: mimeType, partName: partName),
             base: base
@@ -74,7 +74,7 @@ open class FileUploadHTTPRequest: HTTPRequest {
      - parameter headers: map of HTTP headers; default is empty map;
      - parameter parameters: request parameters; default is empty list;
      - parameter interceptors: request interceptors; default is empty array;
-     - parameter session: `Session` for this particular URLRequest; default is `None`, transport-defined;
+     - parameter sessionManager: `SessionManager` for this particular URLRequest; default is `None`, transport-defined;
      - parameter timeout: `URLRequest` timeout;
      - parameter file: file data and metadata;
      - parameter base: base `HTTPRequest` to inherit parameters from; default is `None`.
@@ -86,7 +86,7 @@ open class FileUploadHTTPRequest: HTTPRequest {
         parameters: [HTTPRequestParameters] = [],
         requestInterceptors: [HTTPRequestInterceptor] = [],
         responseInterceptors: [HTTPResponseInterceptor] = [],
-        session: Session? = nil,
+        sessionManager: SessionManager? = nil,
         timeout: TimeInterval? = nil,
         file: FileMultipart,
         base: HTTPRequest? = nil
@@ -99,7 +99,7 @@ open class FileUploadHTTPRequest: HTTPRequest {
             parameters: parameters,
             requestInterceptors: requestInterceptors,
             responseInterceptors: responseInterceptors,
-            session: session,
+            sessionManager: sessionManager,
             timeout: timeout,
             base: base
         )
