@@ -12,7 +12,7 @@ import Foundation
 
 
 /**
- HTTP request with HTTP verb, URL, headers, body and non-functional parameters, like `SessionManager`, `ParameterEncoding`, timeout and
+ HTTP request with HTTP verb, URL, headers, body and non-functional parameters, like `Session`, `ParameterEncoding`, timeout and
  request interceptors.
  */
 open class HTTPRequest: URLRequestConvertible {
@@ -55,7 +55,7 @@ open class HTTPRequest: URLRequestConvertible {
     /**
      Custom session for this particular HTTP request.
      */
-    public let sessionManager:              SessionManager?
+    public let session:              Session?
 
     /**
      Timeout for this particular HTTP request. Default is 30 seconds.
@@ -70,7 +70,7 @@ open class HTTPRequest: URLRequestConvertible {
      - parameter headers: map of HTTP headers; default is empty map;
      - parameter parameters: request parameters; default is empty list;
      - parameter interceptors: request interceptors; default is empty array;
-     - parameter sessionManager: `SessionManager` for this particular URLRequest; default is `None`, transport-defined;
+     - parameter session: `Session` for this particular URLRequest; default is `None`, transport-defined;
      - parameter timeout: `URLRequest` timeout;
      - parameter base: base `HTTPRequest` to inherit parameters from; default is `None`.
      */
@@ -81,7 +81,7 @@ open class HTTPRequest: URLRequestConvertible {
         parameters: [HTTPRequestParameters] = [],
         requestInterceptors: [HTTPRequestInterceptor] = [],
         responseInterceptors: [HTTPResponseInterceptor] = [],
-        sessionManager: SessionManager? = nil,
+        session: Session? = nil,
         timeout: TimeInterval? = nil,
         base: HTTPRequest? = nil
     ) {
@@ -117,7 +117,7 @@ open class HTTPRequest: URLRequestConvertible {
         self.requestInterceptors = mergedRequestInterceptors
         self.responseInterceptors = mergedResponseInterceptors
 
-        self.sessionManager = sessionManager ?? base?.sessionManager
+        self.session = session ?? base?.session
         self.timeout = timeout ?? base?.timeout ?? HTTPRequest.defaultTimeout
     }
 
