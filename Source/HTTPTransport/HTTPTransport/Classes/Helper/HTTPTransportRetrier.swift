@@ -76,7 +76,7 @@ open class HTTPTransportRetrier: RequestInterceptor {
         return delegate.adapted(urlRequest)
     }
     
-    public func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+    public func retry(_ request: Request, for session: Alamofire.Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
         guard request.retryCount < delegate.maxAttemptsCount else {
             completion(.doNotRetry)
             return

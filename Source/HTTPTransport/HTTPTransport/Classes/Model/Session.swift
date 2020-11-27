@@ -16,14 +16,14 @@ import Foundation
  
  Includes security settings (see `Security`) and request retry strategy (see `HTTPTransportRetrier`).
  */
-open class SessionManager {
+open class Session {
 
     /**
      `Session` stands for URLSession reusage.
      
      Includes security settings and request retry strategy.
      */
-    public let manager: Session
+    public let manager: Alamofire.Session
 
     /**
      Initializer.
@@ -31,7 +31,7 @@ open class SessionManager {
      - parameter manager: Alamofire's `Session`.
      */
     public init(
-        manager: Session
+        manager: Alamofire.Session
     ) {
         self.manager = manager
     }
@@ -51,11 +51,11 @@ open class SessionManager {
      */
     public init(
         security: Security,
-        interceptor: HTTPTransportRetrier? = nil
+        retrier: HTTPTransportRetrier? = nil
     ) {
-        self.manager = Session(startRequestsImmediately: true,
-                               interceptor: interceptor,
-                               serverTrustManager: security.trustPolicyManager)
+        self.manager = Alamofire.Session(startRequestsImmediately: true,
+                                         interceptor: retrier,
+                                         serverTrustManager: security.trustPolicyManager)
     }
 
 }

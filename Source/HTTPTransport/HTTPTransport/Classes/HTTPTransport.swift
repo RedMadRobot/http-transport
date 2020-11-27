@@ -24,11 +24,11 @@ open class HTTPTransport {
     public static let defaultSemaphoreTimeoutGap: TimeInterval = 3
 
     /**
-     TCP/HTTP sessionManager between client and server.
+     TCP/HTTP session between client and server.
      
      Includes security settings (see `Security`) and request retry strategy (see `HTTPTransportRetrier`).
      */
-    public let sessionManager: SessionManager
+    public let session: Session
 
     /**
      Synchronous calls' timeout (counting from `URLRequest` timeout).
@@ -76,7 +76,7 @@ open class HTTPTransport {
         allowNetworkingOnMainThread: Bool = false
     ) {
         self.init(
-            sessionManager: type(of: self).createSessionManager(security: security, interceptor: interceptor),
+            session: type(of: self).createSession(security: security, interceptor: interceptor),
             semaphoreTimeout: semaphoreTimeoutGap,
             requestInterceptors: requestInterceptors,
             responseInterceptors: responseInterceptors,
@@ -88,7 +88,7 @@ open class HTTPTransport {
     /**
      Initializer.
      
-     - parameter sessionManager: TCP/HTTP sessionManager between client and server;
+     - parameter session: TCP/HTTP session between client and server;
      - parameter semaphoreTimeout: synchronous requests' timeout; default is `HTTPTransport.defaultSemaphoreTimeout`;
      - parameter requestInterceptors: collection of interceptors for outgoing HTTP requests;
      - parameter responseInterceptors: collection of interceptors for incoming HTTP responses;
@@ -96,14 +96,14 @@ open class HTTPTransport {
      - parameter allowNetworkingOnMainThread: do not throw errors on networking on the main thread; default is false.
      */
     public init(
-        sessionManager: SessionManager,
+        session: Session,
         semaphoreTimeout: TimeInterval = defaultSemaphoreTimeoutGap,
         requestInterceptors: [HTTPRequestInterceptor] = [],
         responseInterceptors: [HTTPResponseInterceptor] = [ClarifyErrorInterceptor()],
         useDefaultValidation: Bool = true,
         allowNetworkingOnMainThread: Bool = false
     ) {
-        self.sessionManager = sessionManager
+        self.session = session
         self.semaphoreTimeoutGap = semaphoreTimeout
         self.requestInterceptors = requestInterceptors
         self.responseInterceptors = responseInterceptors
@@ -124,8 +124,8 @@ open class HTTPTransport {
             preconditionFailure("Networking on the main thread")
         }
 
-        let sessionManager:        SessionManager        = request.sessionManager ?? self.sessionManager
-        let session: Session = sessionManager.manager
+        let session:        Session        = request.session ?? self.session
+        let alamofireSession: Alamofire.Session = session.manager
 
         var result:    Result            = Result.timeout
         let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
@@ -133,7 +133,7 @@ open class HTTPTransport {
         request.with(interceptors: self.requestInterceptors)
 
         let dataRequest: DataRequest =
-            session
+            alamofireSession
                 .request(request)
                 .responseHTTP(
                     interceptors: request.responseInterceptors + self.responseInterceptors
@@ -164,7 +164,7 @@ open class HTTPTransport {
             preconditionFailure("Networking on the main thread")
         }
 
-        let session: Session = self.sessionManager.manager
+        let alamofireSession: Alamofire.Session = self.session.manager
 
         var result:    Result            = Result.timeout
         let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
@@ -178,7 +178,7 @@ open class HTTPTransport {
             }
 
         let dataRequest: DataRequest =
-            session
+            alamofireSession
                 .request(interceptedRequest)
                 .responseHTTP(interceptors: self.responseInterceptors) { (response: ResultResponse) in
                     result = self.composeResult(fromResponse: response)
@@ -210,15 +210,15 @@ open class HTTPTransport {
             preconditionFailure("Networking on the main thread")
         }
 
-        let sessionManager:        SessionManager        = request.sessionManager ?? self.sessionManager
-        let session: Session = sessionManager.manager
+        let session:        Session        = request.session ?? self.session
+        let alamofireSession: Alamofire.Session = session.manager
 
         var result: Result            = Result.timeout
         let semaphore:    DispatchSemaphore = DispatchSemaphore(value: 0)
 
         request.with(interceptors: self.requestInterceptors)
 
-        let uploadResult = session.upload(
+        let uploadResult = alamofireSession.upload(
             multipartFormData: { (formData: MultipartFormData) in
                 formData.append(
                     request.fileMultipart.fileData,
@@ -263,13 +263,13 @@ open class HTTPTransport {
      */
     @discardableResult
     public func send(request: HTTPRequest, callback: @escaping Callback) -> HTTPCall<DataRequest> {
-        let sessionManager:        SessionManager        = request.sessionManager ?? self.sessionManager
-        let session: Session = sessionManager.manager
+        let session:        Session        = request.session ?? self.session
+        let alamofireSession: Alamofire.Session = session.manager
 
         request.with(interceptors: self.requestInterceptors)
 
         let dataRequest: DataRequest =
-            session
+            alamofireSession
                 .request(request)
                 .responseHTTP(
                     interceptors: request.responseInterceptors + self.responseInterceptors
@@ -294,7 +294,7 @@ open class HTTPTransport {
      */
     @discardableResult
     public func send(request: URLRequest, callback: @escaping Callback) -> HTTPCall<DataRequest> {
-        let session: Session = self.sessionManager.manager
+        let session: Alamofire.Session = self.session.manager
 
         let interceptedRequest: URLRequest =
             self.requestInterceptors.reduce(request) { (
@@ -335,12 +335,12 @@ open class HTTPTransport {
         multipartEncodingCallback: MultipartEncodingCallback? = nil,
         callback: @escaping Callback
     ) {
-        let sessionManager:        SessionManager        = request.sessionManager ?? self.sessionManager
-        let session: Session = sessionManager.manager
+        let session:        Session        = request.session ?? self.session
+        let alamofireSession: Alamofire.Session = session.manager
 
         request.with(interceptors: self.requestInterceptors)
 
-        let uploadResult = session.upload(
+        let uploadResult = alamofireSession.upload(
             multipartFormData: { (formData: MultipartFormData) in
                 formData.append(
                     request.fileMultipart.fileData,
@@ -384,8 +384,8 @@ open class HTTPTransport {
             preconditionFailure("Networking on the main thread")
         }
         
-        let sessionManager: SessionManager               = request.sessionManager ?? self.sessionManager
-        let session: Session = sessionManager.manager
+        let session: Session               = request.session ?? self.session
+        let alamofireSession: Alamofire.Session = session.manager
         
         var result: Result               = Result.timeout
         let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
@@ -409,7 +409,7 @@ open class HTTPTransport {
             }
         
         let uploadRequest: UploadRequest =
-            session
+            alamofireSession
                 .upload(request.data, with: interceptedRequest)
                 .responseHTTP(
                     interceptors: request.responseInterceptors + self.responseInterceptors
@@ -437,7 +437,7 @@ open class HTTPTransport {
      - returns: cancellable HTTPCall object, with observable progress.
      */
     public func send(data: Data, request: URLRequest, callback: @escaping Callback) -> HTTPCall<DataRequest> {
-        let session: Session = self.sessionManager.manager
+        let alamofireSession: Alamofire.Session = self.session.manager
         
         let interceptedRequest: URLRequest =
             self.requestInterceptors.reduce(request) { (
@@ -448,7 +448,7 @@ open class HTTPTransport {
         }
         
         let uploadRequest: UploadRequest =
-            session
+            alamofireSession
                 .upload(data, with: interceptedRequest)
                 .responseHTTP(
                     interceptors: self.responseInterceptors
@@ -497,14 +497,14 @@ open class HTTPTransport {
 
 private extension HTTPTransport {
 
-    class func createSessionManager(
+    class func createSession(
         security: Security,
         interceptor: HTTPTransportRetrier?
-    ) -> SessionManager {
-        let manager: Session = Session(startRequestsImmediately: true,
-                                       interceptor: interceptor,
-                                       serverTrustManager: security.trustPolicyManager)
-        return SessionManager(manager: manager)
+    ) -> Session {
+        let alamofireSession = Alamofire.Session(startRequestsImmediately: true,
+                                                 interceptor: interceptor,
+                                                 serverTrustManager: security.trustPolicyManager)
+        return Session(manager: alamofireSession)
     }
 
     func composeResult(fromResponse response: ResultResponse) -> Result {

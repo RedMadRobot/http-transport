@@ -27,7 +27,7 @@ open class DataUploadHTTPRequest: HTTPRequest {
      - parameter headers: map of HTTP headers; default is empty map;
      - parameter parameters: request parameters; default is empty list;
      - parameter interceptors: request interceptors; default is empty array;
-     - parameter sessionManager: `SessionManager` for this particular URLRequest; default is `None`, transport-defined;
+     - parameter session: `Session` for this particular URLRequest; default is `None`, transport-defined;
      - parameter timeout: `URLRequest` timeout;
      - parameter base: base `HTTPRequest` to inherit parameters from; default is `None`.
      - parameter data: file data;
@@ -39,7 +39,7 @@ open class DataUploadHTTPRequest: HTTPRequest {
         parameters: [HTTPRequestParameters] = [],
         requestInterceptors: [HTTPRequestInterceptor] = [],
         responseInterceptors: [HTTPResponseInterceptor] = [],
-        sessionManager: SessionManager? = nil,
+        session: Session? = nil,
         timeout: TimeInterval? = nil,
         base: HTTPRequest? = nil,
         data: Data
@@ -52,7 +52,7 @@ open class DataUploadHTTPRequest: HTTPRequest {
             parameters: parameters,
             requestInterceptors: requestInterceptors,
             responseInterceptors: responseInterceptors,
-            sessionManager: sessionManager,
+            session: session,
             timeout: timeout,
             base: base
         )
