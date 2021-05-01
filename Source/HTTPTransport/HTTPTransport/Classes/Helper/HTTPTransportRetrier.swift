@@ -72,7 +72,7 @@ open class HTTPTransportRetrier: RequestInterceptor {
     
     // MARK: - RequestAdapter
 
-    public func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
+    public func adapt(_ urlRequest: URLRequest, for session: Alamofire.Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
         completion(.success(delegate.adapted(urlRequest)))
     }
     
