@@ -11,4 +11,5 @@ Pod::Spec.new do |s|
   s.source_files = "Source/HTTPTransport/HTTPTransport/Classes/**/*"
   s.requires_arc = true
   s.dependency "Alamofire", '~> 5'
+  s.swift_versions = [ '5.0' ]
 end
