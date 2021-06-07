@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		206D0D3B2080642C9C16FE89 /* Pods_HTTPTransport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C35445D6F7C1B5DA82F88011 /* Pods_HTTPTransport.framework */; };
+		3359B645266E90A6005C4B00 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3359B644266E90A6005C4B00 /* String.swift */; };
 		510768141EA4E9480061FC4F /* HTTPTransport.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 510768131EA4E9480061FC4F /* HTTPTransport.podspec */; };
 		510768161EA4F26C0061FC4F /* HTTPCookie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510768151EA4F26C0061FC4F /* HTTPCookie.swift */; };
 		51593E3B1EA1023400E9A154 /* HTTPTransport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51593E311EA1023400E9A154 /* HTTPTransport.framework */; };
@@ -56,6 +57,7 @@
 /* Begin PBXFileReference section */
 		27E003498269AAF06CF316CA /* Pods-HTTPTransportTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HTTPTransportTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HTTPTransportTests/Pods-HTTPTransportTests.debug.xcconfig"; sourceTree = "<group>"; };
 		2AB948C68DF4268744B0C59B /* Pods-HTTPTransportTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HTTPTransportTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HTTPTransportTests/Pods-HTTPTransportTests.release.xcconfig"; sourceTree = "<group>"; };
+		3359B644266E90A6005C4B00 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		367CFDB90F622C938AB9BCAF /* Pods-HTTPTransport.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HTTPTransport.release.xcconfig"; path = "Pods/Target Support Files/Pods-HTTPTransport/Pods-HTTPTransport.release.xcconfig"; sourceTree = "<group>"; };
 		3F047BDB740FA99796359D9A /* Pods-HTTPTransport.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HTTPTransport.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HTTPTransport/Pods-HTTPTransport.debug.xcconfig"; sourceTree = "<group>"; };
 		510768131EA4E9480061FC4F /* HTTPTransport.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = HTTPTransport.podspec; path = ../../../../HTTPTransport.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -210,6 +212,7 @@
 				51EDF51B1EA1170D0013FBEF /* NSError.swift */,
 				51EDF50C1EA10CDC0013FBEF /* Security */,
 				51EDF4FA1EA106340013FBEF /* Session.swift */,
+				3359B644266E90A6005C4B00 /* String.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -461,6 +464,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3359B645266E90A6005C4B00 /* String.swift in Sources */,
 				51EDF51E1EA117660013FBEF /* FileMultipart.swift in Sources */,
 				51EDF5111EA10CDC0013FBEF /* TrustPolicy.swift in Sources */,
 				51EDF5091EA10A5E0013FBEF /* LogResponseInterceptor.swift in Sources */,

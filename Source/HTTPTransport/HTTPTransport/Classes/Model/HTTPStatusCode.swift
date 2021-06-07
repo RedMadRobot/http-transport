@@ -6,9 +6,7 @@
 //  Copyright (c) 2017 Richard Hodgkins. All rights reserved.
 //
 
-
 import Foundation
-
 
 /// HTTP status codes as per the [IANA HTTP status code registry](http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml).
 ///
@@ -403,9 +401,7 @@ public enum HTTPStatusCode: Int {
     ///
     /// Used by the [Pantheon](https://en.wikipedia.org/wiki/Pantheon_(software)) web platform to indicate a site that has been frozen due to inactivity.
     case siteIsFrozen                     = 530
-
 }
-
 
 public extension HTTPStatusCode {
 
@@ -438,32 +434,34 @@ public extension HTTPStatusCode {
     private func isIn(range: ClosedRange<HTTPStatusCode.RawValue>) -> Bool {
         return range.contains(rawValue)
     }
-
 }
 
+// MARK: - NSHTTPURLResponse
 
-public extension HTTPStatusCode {
+extension HTTPStatusCode {
 
-    /// - returns: a localized string suitable for displaying to users that describes the specified status code.
-    var localizedReasonPhrase: String {
-        return HTTPURLResponse.localizedString(forStatusCode: rawValue)
+    public var localizedReasonPhrase: String {
+        HTTPURLResponse.localizedString(forStatusCode: rawValue)
     }
-
 }
 
+// MARK: - Printing (CustomStringConvertible)
 
-extension HTTPStatusCode: CustomDebugStringConvertible, CustomStringConvertible {
-
+extension HTTPStatusCode: CustomStringConvertible {
     public var description: String {
-        return "\(rawValue) - \(localizedReasonPhrase)"
+        "\(rawValue) - \(localizedReasonPhrase)"
     }
-
-    public var debugDescription: String {
-        return "HTTPStatusCode:\(description)"
-    }
-
 }
 
+// MARK: - Printing (CustomDebugStringConvertible)
+
+extension HTTPStatusCode: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        "HTTPStatusCode: \(description)"
+    }
+}
+
+// MARK: - HTTP URL Response
 
 public extension HTTPStatusCode {
 
@@ -490,5 +488,14 @@ public extension HTTPStatusCode {
         }
         self = value
     }
+}
 
+// MARK: - NSHTTPURLResponse
+
+extension HTTPURLResponse {
+
+    /// Return HTTPStatusCode instance
+    public var statusCodeValue: HTTPStatusCode? {
+        HTTPStatusCode(httpURLResponse: self)
+    }
 }

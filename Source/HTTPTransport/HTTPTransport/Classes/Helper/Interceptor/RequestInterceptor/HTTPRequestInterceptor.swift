@@ -9,12 +9,8 @@
 
 import Foundation
 
-
-/**
- Abstract class for HTTP request interceptors.
- 
- Allows transforming original `URLRequest` before it is sent.
- */
+/// Abstract class for HTTP request interceptors.
+/// Allows transforming original `URLRequest` before it is sent.
 open class HTTPRequestInterceptor {
 
     /**

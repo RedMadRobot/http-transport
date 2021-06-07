@@ -37,8 +37,8 @@ open class ClarifyErrorInterceptor: HTTPResponseInterceptor {
         response: HTTPResponseInterceptor.RawResponse
     ) -> HTTPResponseInterceptor.RawResponse {
         guard
-            let receivedError: Error = response.error,
-            let httpStatusCode: HTTPStatusCode = HTTPStatusCode(httpURLResponse: response.response)
+            let receivedError = response.error,
+            let httpStatusCode = HTTPStatusCode(httpURLResponse: response.response)
         else { return response }
 
         let error: NSError = receivedError as NSError
