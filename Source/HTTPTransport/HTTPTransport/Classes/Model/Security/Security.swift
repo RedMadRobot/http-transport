@@ -3,48 +3,38 @@
 //  HTTPTransport
 //
 //  Created by Jeorge Taflanidi
-//  Copyright © 2017 RedMadRobot LLC. All rights reserved.
+//  Copyright © 2021 RedMadRobot LLC & Incetro Inc. All rights reserved.
 //
 
-
 import Alamofire
-import Foundation
 
+// MARK: - Security
 
-/**
- SSL pinning policy.
- */
+/// SSL pinning policy
 open class Security {
 
-    /**
-     Alamofire's `ServerTrustPolicyManager`.
-     */
+    // MARK: - Properties
+
+    /// Alamofire's `ServerTrustPolicyManager`
     public let trustPolicyManager: ServerTrustManager
 
-    /**
-     Default SSL pinning policy: disabled.
-     */
+    /// Default SSL pinning policy: disabled
     open class var noEvaluation: Security {
-        return Security(trustPolicyManager: TrustPolicyManager.noEvaluation)
+        Security(trustPolicyManager: TrustPolicyManager.noEvaluation)
     }
 
-    /**
-     Initializer.
-     
-     - parameter trustPolicyManager: Alamofire's `ServerTrustPolicyManager`.
-     */
+    // MARK: - Initializers
+
+    /// Default initializer
+    /// - Parameter trustPolicyManager: Alamofire's `ServerTrustPolicyManager`
     public init(trustPolicyManager: ServerTrustManager) {
         self.trustPolicyManager = trustPolicyManager
     }
 
-    /**
-     Convinience initializer for cases, when you'd like to ommit importing Alamofire.
-     
-     - parameter certificates: collection of `TrustPolicyManager.Certificate` objects 
-     (each is actually a pair "host: fingerprint").
-     */
+    /// Convinience initializer for cases, when you'd like to ommit importing Alamofire
+    /// - Parameter certificates: collection of `TrustPolicyManager.Certificate` objects
+    ///   - (each is actually a pair "host: fingerprint")
     public convenience init(certificates: [TrustPolicyManager.Certificate]) {
         self.init(trustPolicyManager: TrustPolicyManager(certificates: certificates))
     }
-
 }

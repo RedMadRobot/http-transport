@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		206D0D3B2080642C9C16FE89 /* Pods_HTTPTransport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C35445D6F7C1B5DA82F88011 /* Pods_HTTPTransport.framework */; };
 		3359B645266E90A6005C4B00 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3359B644266E90A6005C4B00 /* String.swift */; };
-		510768141EA4E9480061FC4F /* HTTPTransport.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 510768131EA4E9480061FC4F /* HTTPTransport.podspec */; };
+		510768141EA4E9480061FC4F /* incetro-http-transport.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 510768131EA4E9480061FC4F /* incetro-http-transport.podspec */; };
 		510768161EA4F26C0061FC4F /* HTTPCookie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510768151EA4F26C0061FC4F /* HTTPCookie.swift */; };
 		51593E3B1EA1023400E9A154 /* HTTPTransport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51593E311EA1023400E9A154 /* HTTPTransport.framework */; };
 		51593E551EA1029700E9A154 /* HTTPTransportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51593E521EA1029700E9A154 /* HTTPTransportTests.swift */; };
@@ -32,7 +32,7 @@
 		51EDF51E1EA117660013FBEF /* FileMultipart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EDF51D1EA117660013FBEF /* FileMultipart.swift */; };
 		51EDF5201EA11B010013FBEF /* DataRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EDF51F1EA11B010013FBEF /* DataRequest.swift */; };
 		5E15085525361E0B005FB406 /* CustomServerTrustEvaluating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E15085325361E0B005FB406 /* CustomServerTrustEvaluating.swift */; };
-		5E15085625361E0B005FB406 /* CustomDataResponseSerializerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E15085425361E0B005FB406 /* CustomDataResponseSerializerProtocol.swift */; };
+		5E15085625361E0B005FB406 /* CustomDataResponseSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E15085425361E0B005FB406 /* CustomDataResponseSerializer.swift */; };
 		5EBB18F325399BEB00C79229 /* Data+Crypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBB18F225399BEB00C79229 /* Data+Crypto.swift */; };
 		AA19EE981F67E5830066B2A4 /* DataUploadHTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA19EE971F67E5830066B2A4 /* DataUploadHTTPRequest.swift */; };
 		BAA520B178D7C85EF42A7794 /* HTTPRequestParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA52F945A55184D494340C8 /* HTTPRequestParameters.swift */; };
@@ -42,6 +42,10 @@
 		BAA52BAC269BCDA57AEBB42F /* HTTPCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA524015BBBE04A8DDC1A94 /* HTTPCall.swift */; };
 		BAA52E5C95966700FD3FD3C4 /* MIMEType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA52583CC7418F6EDF69AE5 /* MIMEType.swift */; };
 		C5797D9896A290E47517A069 /* Pods_HTTPTransportTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAD8003B7963CEFD2D4E869C /* Pods_HTTPTransportTests.framework */; };
+		DED9B40B2695BFA400CC83A1 /* CookieProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED9B40A2695BFA400CC83A1 /* CookieProviding.swift */; };
+		DED9B40E2695C14F00CC83A1 /* CookieStoring.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED9B40D2695C14F00CC83A1 /* CookieStoring.swift */; };
+		DED9B4102695C31E00CC83A1 /* RawResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED9B40F2695C31E00CC83A1 /* RawResponse.swift */; };
+		DED9B4182695C7AC00CC83A1 /* HTTPTransportRetrierDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED9B4172695C7AC00CC83A1 /* HTTPTransportRetrierDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,7 +64,7 @@
 		3359B644266E90A6005C4B00 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		367CFDB90F622C938AB9BCAF /* Pods-HTTPTransport.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HTTPTransport.release.xcconfig"; path = "Pods/Target Support Files/Pods-HTTPTransport/Pods-HTTPTransport.release.xcconfig"; sourceTree = "<group>"; };
 		3F047BDB740FA99796359D9A /* Pods-HTTPTransport.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HTTPTransport.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HTTPTransport/Pods-HTTPTransport.debug.xcconfig"; sourceTree = "<group>"; };
-		510768131EA4E9480061FC4F /* HTTPTransport.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = HTTPTransport.podspec; path = ../../../../HTTPTransport.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		510768131EA4E9480061FC4F /* incetro-http-transport.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "incetro-http-transport.podspec"; path = "../../../../incetro-http-transport.podspec"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		510768151EA4F26C0061FC4F /* HTTPCookie.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPCookie.swift; sourceTree = "<group>"; };
 		51593E311EA1023400E9A154 /* HTTPTransport.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HTTPTransport.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		51593E3A1EA1023400E9A154 /* HTTPTransportTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HTTPTransportTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -86,7 +90,7 @@
 		51EDF51D1EA117660013FBEF /* FileMultipart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileMultipart.swift; sourceTree = "<group>"; };
 		51EDF51F1EA11B010013FBEF /* DataRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataRequest.swift; sourceTree = "<group>"; };
 		5E15085325361E0B005FB406 /* CustomServerTrustEvaluating.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomServerTrustEvaluating.swift; sourceTree = "<group>"; };
-		5E15085425361E0B005FB406 /* CustomDataResponseSerializerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomDataResponseSerializerProtocol.swift; sourceTree = "<group>"; };
+		5E15085425361E0B005FB406 /* CustomDataResponseSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomDataResponseSerializer.swift; sourceTree = "<group>"; };
 		5EBB18F225399BEB00C79229 /* Data+Crypto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Crypto.swift"; sourceTree = "<group>"; };
 		AA19EE971F67E5830066B2A4 /* DataUploadHTTPRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataUploadHTTPRequest.swift; sourceTree = "<group>"; };
 		AAD8003B7963CEFD2D4E869C /* Pods_HTTPTransportTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HTTPTransportTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -97,6 +101,10 @@
 		BAA52AA42BC3A92B8CC510E8 /* ReceivedCookieInterceptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceivedCookieInterceptor.swift; sourceTree = "<group>"; };
 		BAA52F945A55184D494340C8 /* HTTPRequestParameters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPRequestParameters.swift; sourceTree = "<group>"; };
 		C35445D6F7C1B5DA82F88011 /* Pods_HTTPTransport.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HTTPTransport.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DED9B40A2695BFA400CC83A1 /* CookieProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookieProviding.swift; sourceTree = "<group>"; };
+		DED9B40D2695C14F00CC83A1 /* CookieStoring.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookieStoring.swift; sourceTree = "<group>"; };
+		DED9B40F2695C31E00CC83A1 /* RawResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawResponse.swift; sourceTree = "<group>"; };
+		DED9B4172695C7AC00CC83A1 /* HTTPTransportRetrierDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPTransportRetrierDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,7 +169,7 @@
 		51593E4D1EA1028D00E9A154 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				510768131EA4E9480061FC4F /* HTTPTransport.podspec */,
+				510768131EA4E9480061FC4F /* incetro-http-transport.podspec */,
 				51593E591EA1036A00E9A154 /* HTTPTransport.h */,
 				51593E4E1EA1028D00E9A154 /* Info.plist */,
 			);
@@ -197,7 +205,7 @@
 		51EDF4F91EA106050013FBEF /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				5E15085425361E0B005FB406 /* CustomDataResponseSerializerProtocol.swift */,
+				5E15085425361E0B005FB406 /* CustomDataResponseSerializer.swift */,
 				5E15085325361E0B005FB406 /* CustomServerTrustEvaluating.swift */,
 				AA19EE971F67E5830066B2A4 /* DataUploadHTTPRequest.swift */,
 				51EDF51D1EA117660013FBEF /* FileMultipart.swift */,
@@ -222,7 +230,7 @@
 			children = (
 				51EDF4FD1EA10A5E0013FBEF /* Interceptor */,
 				51EDF51F1EA11B010013FBEF /* DataRequest.swift */,
-				51EDF5131EA111E10013FBEF /* HTTPTransportRetrier.swift */,
+				DED9B4162695C79C00CC83A1 /* HTTPTransportRetrier */,
 				5EBB18F225399BEB00C79229 /* Data+Crypto.swift */,
 			);
 			path = Helper;
@@ -231,6 +239,10 @@
 		51EDF4FD1EA10A5E0013FBEF /* Interceptor */ = {
 			isa = PBXGroup;
 			children = (
+				DED9B4112695C36000CC83A1 /* LogResponseInterceptor */,
+				DED9B40C2695C13E00CC83A1 /* ReceivedCookieInterceptor */,
+				DED9B4092695BF9100CC83A1 /* AddCookieInterceptor */,
+				DED9B4062695BEDF00CC83A1 /* LogRequestInterceptor */,
 				51EDF4FE1EA10A5E0013FBEF /* RequestInterceptor */,
 				51EDF5011EA10A5E0013FBEF /* ResponseInterceptor */,
 			);
@@ -241,8 +253,6 @@
 			isa = PBXGroup;
 			children = (
 				51EDF4FF1EA10A5E0013FBEF /* HTTPRequestInterceptor.swift */,
-				51EDF5001EA10A5E0013FBEF /* LogRequestInterceptor.swift */,
-				BAA52832426ECD13334ACAC1 /* AddCookieInterceptor.swift */,
 			);
 			path = RequestInterceptor;
 			sourceTree = "<group>";
@@ -251,8 +261,7 @@
 			isa = PBXGroup;
 			children = (
 				51EDF5031EA10A5E0013FBEF /* HTTPResponseInterceptor.swift */,
-				51EDF5041EA10A5E0013FBEF /* LogResponseInterceptor.swift */,
-				BAA52AA42BC3A92B8CC510E8 /* ReceivedCookieInterceptor.swift */,
+				DED9B40F2695C31E00CC83A1 /* RawResponse.swift */,
 				BAA52316B9ABF0502EA8D5E3 /* ClarifyErrorInterceptor.swift */,
 			);
 			path = ResponseInterceptor;
@@ -277,6 +286,49 @@
 				2AB948C68DF4268744B0C59B /* Pods-HTTPTransportTests.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		DED9B4062695BEDF00CC83A1 /* LogRequestInterceptor */ = {
+			isa = PBXGroup;
+			children = (
+				51EDF5001EA10A5E0013FBEF /* LogRequestInterceptor.swift */,
+			);
+			path = LogRequestInterceptor;
+			sourceTree = "<group>";
+		};
+		DED9B4092695BF9100CC83A1 /* AddCookieInterceptor */ = {
+			isa = PBXGroup;
+			children = (
+				BAA52832426ECD13334ACAC1 /* AddCookieInterceptor.swift */,
+				DED9B40A2695BFA400CC83A1 /* CookieProviding.swift */,
+			);
+			path = AddCookieInterceptor;
+			sourceTree = "<group>";
+		};
+		DED9B40C2695C13E00CC83A1 /* ReceivedCookieInterceptor */ = {
+			isa = PBXGroup;
+			children = (
+				BAA52AA42BC3A92B8CC510E8 /* ReceivedCookieInterceptor.swift */,
+				DED9B40D2695C14F00CC83A1 /* CookieStoring.swift */,
+			);
+			path = ReceivedCookieInterceptor;
+			sourceTree = "<group>";
+		};
+		DED9B4112695C36000CC83A1 /* LogResponseInterceptor */ = {
+			isa = PBXGroup;
+			children = (
+				51EDF5041EA10A5E0013FBEF /* LogResponseInterceptor.swift */,
+			);
+			path = LogResponseInterceptor;
+			sourceTree = "<group>";
+		};
+		DED9B4162695C79C00CC83A1 /* HTTPTransportRetrier */ = {
+			isa = PBXGroup;
+			children = (
+				51EDF5131EA111E10013FBEF /* HTTPTransportRetrier.swift */,
+				DED9B4172695C7AC00CC83A1 /* HTTPTransportRetrierDelegate.swift */,
+			);
+			path = HTTPTransportRetrier;
 			sourceTree = "<group>";
 		};
 		FD18534B25076437C38053FA /* Frameworks */ = {
@@ -389,7 +441,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				510768141EA4E9480061FC4F /* HTTPTransport.podspec in Resources */,
+				510768141EA4E9480061FC4F /* incetro-http-transport.podspec in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -465,6 +517,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3359B645266E90A6005C4B00 /* String.swift in Sources */,
+				DED9B4102695C31E00CC83A1 /* RawResponse.swift in Sources */,
 				51EDF51E1EA117660013FBEF /* FileMultipart.swift in Sources */,
 				51EDF5111EA10CDC0013FBEF /* TrustPolicy.swift in Sources */,
 				51EDF5091EA10A5E0013FBEF /* LogResponseInterceptor.swift in Sources */,
@@ -475,15 +528,18 @@
 				51EDF5061EA10A5E0013FBEF /* LogRequestInterceptor.swift in Sources */,
 				51EDF5201EA11B010013FBEF /* DataRequest.swift in Sources */,
 				51EDF4FB1EA106340013FBEF /* Session.swift in Sources */,
+				DED9B4182695C7AC00CC83A1 /* HTTPTransportRetrierDelegate.swift in Sources */,
 				51EDF4F81EA105C60013FBEF /* HTTPTransport.swift in Sources */,
 				51EDF5141EA111E10013FBEF /* HTTPTransportRetrier.swift in Sources */,
+				DED9B40E2695C14F00CC83A1 /* CookieStoring.swift in Sources */,
+				DED9B40B2695BFA400CC83A1 /* CookieProviding.swift in Sources */,
 				51EDF5081EA10A5E0013FBEF /* HTTPResponseInterceptor.swift in Sources */,
 				51EDF5181EA112770013FBEF /* FileUploadHTTPRequest.swift in Sources */,
 				51EDF5051EA10A5E0013FBEF /* HTTPRequestInterceptor.swift in Sources */,
 				51EDF5121EA10CDC0013FBEF /* TrustPolicyManager.swift in Sources */,
 				51EDF51A1EA112770013FBEF /* HTTPResponse.swift in Sources */,
 				51EDF50B1EA10C960013FBEF /* HTTPStatusCode.swift in Sources */,
-				5E15085625361E0B005FB406 /* CustomDataResponseSerializerProtocol.swift in Sources */,
+				5E15085625361E0B005FB406 /* CustomDataResponseSerializer.swift in Sources */,
 				510768161EA4F26C0061FC4F /* HTTPCookie.swift in Sources */,
 				51EDF51C1EA1170D0013FBEF /* NSError.swift in Sources */,
 				BAA525F363594620CA30CB81 /* AddCookieInterceptor.swift in Sources */,

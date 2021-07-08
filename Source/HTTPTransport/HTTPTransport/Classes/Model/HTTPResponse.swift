@@ -3,46 +3,36 @@
 //  HTTPTransport
 //
 //  Created by Jeorge Taflanidi
-//  Copyright © 2017 RedMadRobot LLC. All rights reserved.
+//  Copyright © 2021 RedMadRobot LLC & Incetro Inc. All rights reserved.
 //
 
+// MARK: - HTTPResponse
 
-import Foundation
-
-
-/**
- HTTP response with status code, response headers and body, if any.
- */
+/// HTTP response with status code, response headers and body, if any
 open class HTTPResponse {
 
-    /**
-     Request status.
-     */
+    // MARK: - Properties
+
+    /// Request status
     public let httpStatus: HTTPStatusCode
 
-    /**
-     Collection of received headers.
-     */
-    public let headers:    [String: String]
+    /// Collection of received headers
+    public let headers: [String: String]
 
-    /**
-     Received body data, if any.
-     */
-    public let body:       Data?
+    /// Received body data, if any
+    public let body: Data?
 
-    /**
-     Corresponding HTTP request, which produced this response.
-     */
-    public let request:    URLRequest?
+    /// Corresponding HTTP request, which produced this response
+    public let request: URLRequest?
 
-    /**
-     Initializer.
-     
-     - parameter httpStatus: request status;
-     - parameter headers: collection of received headers;
-     - parameter body: received body data, if any;
-     - parameter request: original URLRequest, which produced this response, if any.
-     */
+    // MARK: - Initializers
+
+    /// Default initializer
+    /// - Parameters:
+    ///   - httpStatus: request status
+    ///   - headers: collection of received headers
+    ///   - body: received body data, if any
+    ///   - request: original URLRequest, which produced this response, if any
     public init(
         httpStatus: HTTPStatusCode,
         headers: [String: String],
@@ -55,35 +45,29 @@ open class HTTPResponse {
         self.request = request
     }
 
-    /**
-     Transform body data to JSON object, if any.
-     
-     - returns: `None`, if no body data is received.
-     - throws: Serialization error, if present body data cannot be deserialized.
-     */
+    /// Transform body data to JSON object, if any
+    /// - Throws: Serialization error, if present body data cannot be deserialized
+    /// - Returns: `None`, if no body data is received
     open func getJSON() throws -> Any? {
-        if let bodyData: Data = self.body {
-            return try JSONSerialization.jsonObject(with: bodyData, options: JSONSerialization.ReadingOptions.allowFragments)
+        if let bodyData = body {
+            return try JSONSerialization.jsonObject(
+                with: bodyData, options: JSONSerialization.ReadingOptions.allowFragments
+            )
         } else {
             return nil
         }
     }
 
-    /**
-     Transform body data to JSON dictionary, if any.
-     
-     - returns: `None`, if no body data is received; if received JSON is not a dictionary, it gets wrapped into ["data": JSON];
-     - throws: Serialization error, if present body data cannot be deserialized.
-     */
+    /// Transform body data to JSON dictionary, if any
+    /// - Throws: Serialization error, if present body data cannot be deserialized
+    /// - Returns: `None`, if no body data is received;
+    ///   - if received JSON is not a dictionary, it gets wrapped into ["data": JSON]
     open func getJSONDictionary() throws -> [String: Any]? {
-        guard let json: Any = try self.getJSON()
-        else { return nil }
-
-        if let dictionary: [String: Any] = json as? [String: Any] {
+        guard let json: Any = try self.getJSON() else { return nil }
+        if let dictionary = json as? [String: Any] {
             return dictionary
         } else {
             return ["data": json]
         }
     }
-
 }

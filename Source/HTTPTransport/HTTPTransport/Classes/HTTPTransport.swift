@@ -3,69 +3,55 @@
 //  HTTPTransport
 //
 //  Created by Jeorge Taflanidi
-//  Copyright © 2017 RedMadRobot LLC. All rights reserved.
+//  Copyright © 2021 RedMadRobot LLC & Incetro Inc. All rights reserved.
 //
 
-
 import Alamofire
-import Foundation
 
+// MARK: - Aliases
 
 public typealias ResultResponse = DataResponse<HTTPResponse, AFError>
 
-/**
- Performs synchronous HTTP(s) requests.
- */
+// MARK: - HTTPTransport
+
+/// Performs synchronous HTTP(s) request
 open class HTTPTransport {
 
-    /**
-     Default timeout gap for synchronous calls (calculated from `URLRequest` timeout).
-     */
+    // MARK: - Properties
+
+    /// Default timeout gap for synchronous calls (calculated from `URLRequest` timeout)
     public static let defaultSemaphoreTimeoutGap: TimeInterval = 3
 
-    /**
-     TCP/HTTP session between client and server.
-     
-     Includes security settings (see `Security`) and request retry strategy (see `HTTPTransportRetrier`).
-     */
+    /// TCP/HTTP session between client and server
+    /// Includes security settings (see `Security`) and request retry strategy (see `HTTPTransportRetrier`)
     public let session: Session
 
-    /**
-     Synchronous calls' timeout (counting from `URLRequest` timeout).
-     */
+    /// Synchronous calls' timeout (counting from `URLRequest` timeout)
     public let semaphoreTimeoutGap: TimeInterval
 
-    /**
-     Collection of interceptors for outgoing HTTP requests.
-     */
+    /// Collection of interceptors for outgoing HTTP requests
     public let requestInterceptors: [HTTPRequestInterceptor]
 
-    /**
-     Collection of interceptors for incoming HTTP responses.
-     */
+    /// Collection of interceptors for incoming HTTP responses
     public let responseInterceptors: [HTTPResponseInterceptor]
 
-    /**
-     Allow using Alamofire `validate()` method.
-     */
+    /// Allow using Alamofire `validate()` method
     public let useDefaultValidation: Bool
     
-    /**
-     Precondition failure on network calls on main thread is disabled.
-     */
+    /// Precondition failure on network calls on main thread is disabled
     public let allowNetworkingOnMainThread: Bool
 
-    /**
-     Initializer.
-     
-     - parameter security: applied SSL pinning policy; default is "no SSL pinning";
-     - parameter retrier: applied request retry policy; default is `None`
-     - parameter semaphoreTimeout: synchronous requests' timeout; default is `HTTPTransport.defaultSemaphoreTimeout`;
-     - parameter requestInterceptors: collection of interceptors for outgoing HTTP requests;
-     - parameter responseInterceptors: collection of interceptors for incoming HTTP responses;
-     - parameter useDefaultValidation: use Alamofire `validate()` method; default is true;
-     - parameter allowNetworkingOnMainThread: do not throw errors on networking on the main thread; default is false.
-     */
+    // MARK: - Initializers
+
+    /// Convenience initializer
+    /// - Parameters:
+    ///   - security: applied SSL pinning policy; default is "no SSL pinning"
+    ///   - interceptor: applied request retry policy; default is `None`
+    ///   - semaphoreTimeoutGap: synchronous requests' timeout; default is `HTTPTransport.defaultSemaphoreTimeout`
+    ///   - requestInterceptors: collection of interceptors for outgoing HTTP requests
+    ///   - responseInterceptors: collection of interceptors for incoming HTTP responses
+    ///   - useDefaultValidation: use Alamofire `validate()` method; default is true
+    ///   - allowNetworkingOnMainThread: do not throw errors on networking on the main thread; default is false
     public convenience init(
         security: Security = Security.noEvaluation,
         interceptor: HTTPTransportRetrier? = nil,
@@ -85,16 +71,14 @@ open class HTTPTransport {
         )
     }
 
-    /**
-     Initializer.
-     
-     - parameter session: TCP/HTTP session between client and server;
-     - parameter semaphoreTimeout: synchronous requests' timeout; default is `HTTPTransport.defaultSemaphoreTimeout`;
-     - parameter requestInterceptors: collection of interceptors for outgoing HTTP requests;
-     - parameter responseInterceptors: collection of interceptors for incoming HTTP responses;
-     - parameter useDefaultValidation: use Alamofire `validate()` method; default is true;
-     - parameter allowNetworkingOnMainThread: do not throw errors on networking on the main thread; default is false.
-     */
+    /// Default initializer
+    /// - Parameters:
+    ///   - session: TCP/HTTP session between client and server
+    ///   - semaphoreTimeout: synchronous requests' timeout; default is `HTTPTransport.defaultSemaphoreTimeout`
+    ///   - requestInterceptors: collection of interceptors for outgoing HTTP requests
+    ///   - responseInterceptors: collection of interceptors for incoming HTTP responses
+    ///   - useDefaultValidation: use Alamofire `validate()` method; default is true
+    ///   - allowNetworkingOnMainThread: do not throw errors on networking on the main thread; default is false
     public init(
         session: Session,
         semaphoreTimeout: TimeInterval = defaultSemaphoreTimeoutGap,
@@ -111,113 +95,81 @@ open class HTTPTransport {
         self.allowNetworkingOnMainThread = allowNetworkingOnMainThread
     }
 
-    /**
-     Send an HTTP request.
-     
-     - parameter request: an HTTP request with HTTP verb, URL, headers, body etc.
-     
-     - returns: either `.success` with HTTP response or `.failure` with error object.
-     */
+    // MARK: - Useful
+
+    /// Send an HTTP request
+    /// - Parameter request: an HTTP request with HTTP verb, URL, headers, body etc.
+    /// - Returns: either `.success` with HTTP response or `.failure` with error object
     open func send(request: HTTPRequest) -> Result {
         guard !Thread.isMainThread || allowNetworkingOnMainThread
         else {
             preconditionFailure("Networking on the main thread")
         }
-
-        let session:        Session        = request.session ?? self.session
+        let session = request.session ?? session
         let alamofireSession: Alamofire.Session = session.manager
-
-        var result:    Result            = Result.timeout
-        let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
-
-        request.with(interceptors: self.requestInterceptors)
-
-        let dataRequest: DataRequest =
-            alamofireSession
-                .request(request)
-                .responseHTTP(
-                    interceptors: request.responseInterceptors + self.responseInterceptors
-                ) { (response: ResultResponse) in
-                    result = self.composeResult(fromResponse: response)
-                    semaphore.signal()
-                }
-
-        if self.useDefaultValidation {
+        var result = Result.timeout
+        let semaphore = DispatchSemaphore(value: 0)
+        request.with(interceptors: requestInterceptors)
+        let dataRequest = alamofireSession
+            .request(request)
+            .responseHTTP(
+                interceptors: request.responseInterceptors + responseInterceptors
+            ) { (response: ResultResponse) in
+                result = self.composeResult(fromResponse: response)
+                semaphore.signal()
+            }
+        if useDefaultValidation {
             dataRequest.validate()
         }
-
-        let gap: TimeInterval = request.timeout + self.semaphoreTimeoutGap
+        let gap = request.timeout + semaphoreTimeoutGap
         _ = semaphore.wait(timeout: DispatchTime.now() + gap)
         return result
     }
 
-    /**
-     Send an HTTP request.
-
-     - parameter request: an `URLRequest` instance.
-
-     - returns: either `.success` with HTTP response or `.failure` with error object.
-     */
+    /// Send an HTTP request
+    /// - Parameter request: an `URLRequest` instance
+    /// - Returns: either `.success` with HTTP response or `.failure` with error object
     open func send(request: URLRequest) -> Result {
         guard !Thread.isMainThread || allowNetworkingOnMainThread
         else {
             preconditionFailure("Networking on the main thread")
         }
-
-        let alamofireSession: Alamofire.Session = self.session.manager
-
-        var result:    Result            = Result.timeout
-        let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
-
-        let interceptedRequest: URLRequest =
-            self.requestInterceptors.reduce(request) { (
-                result: URLRequest,
-                interceptor: HTTPRequestInterceptor
-            ) -> URLRequest in
-                return interceptor.intercept(request: result)
+        let alamofireSession: Alamofire.Session = session.manager
+        var result = Result.timeout
+        let semaphore = DispatchSemaphore(value: 0)
+        let interceptedRequest = requestInterceptors.reduce(request) { (
+            result: URLRequest,
+            interceptor: HTTPRequestInterceptor
+        ) -> URLRequest in
+            return interceptor.intercept(request: result)
+        }
+        let dataRequest = alamofireSession
+            .request(interceptedRequest)
+            .responseHTTP(interceptors: responseInterceptors) { (response: ResultResponse) in
+                result = self.composeResult(fromResponse: response)
+                semaphore.signal()
             }
-
-        let dataRequest: DataRequest =
-            alamofireSession
-                .request(interceptedRequest)
-                .responseHTTP(interceptors: self.responseInterceptors) { (response: ResultResponse) in
-                    result = self.composeResult(fromResponse: response)
-                    semaphore.signal()
-                }
-
-        if self.useDefaultValidation {
+        if useDefaultValidation {
             dataRequest.validate()
         }
-
-        let gap: TimeInterval = interceptedRequest.timeoutInterval + self.semaphoreTimeoutGap
+        let gap = interceptedRequest.timeoutInterval + semaphoreTimeoutGap
         _ = semaphore.wait(timeout: DispatchTime.now() + gap)
         return result
     }
 
-    /**
-     Send an HTTP request in order to upload file.
-     
-     - parameter request: an HTTP request with HTTP verb, URL, headers, file data etc.
-     
-     - attention: JSON-encoded request parameters are ignored, plist-encoded parameters are put together with the body 
-     form data, URL parameters go into URL as always.
-     
-     - returns: either `.success` with HTTP response or `.failure` with error object.
-     */
+    /// Send an HTTP request in order to upload file
+    /// - Parameter request: an HTTP request with HTTP verb, URL, headers, file data etc.
+    /// - Returns: either `.success` with HTTP response or `.failure` with error object
     open func send(request: FileUploadHTTPRequest) -> Result {
         guard !Thread.isMainThread || allowNetworkingOnMainThread
         else {
             preconditionFailure("Networking on the main thread")
         }
-
-        let session:        Session        = request.session ?? self.session
+        let session = request.session ?? session
         let alamofireSession: Alamofire.Session = session.manager
-
-        var result: Result            = Result.timeout
-        let semaphore:    DispatchSemaphore = DispatchSemaphore(value: 0)
-
-        request.with(interceptors: self.requestInterceptors)
-
+        var result = Result.timeout
+        let semaphore = DispatchSemaphore(value: 0)
+        request.with(interceptors: requestInterceptors)
         let uploadResult = alamofireSession.upload(
             multipartFormData: { (formData: MultipartFormData) in
                 formData.append(
@@ -226,7 +178,6 @@ open class HTTPTransport {
                     fileName: request.fileMultipart.fileName,
                     mimeType: request.fileMultipart.mimeType.value
                 )
-
                 request.parameters.forEach{
                     for (key, value) in $0.parameters {
                         if let value = value as? String {
@@ -237,109 +188,88 @@ open class HTTPTransport {
             },
             with: request
         )
-        
-        uploadResult.responseHTTP(interceptors: request.responseInterceptors + self.responseInterceptors,
-                            completionHandler: { respons in
-                                result = self.composeResult(fromResponse: respons)
-                                semaphore.signal()
-                            })
-        
-        if self.useDefaultValidation {
+        uploadResult.responseHTTP(
+            interceptors: request.responseInterceptors + responseInterceptors,
+            completionHandler: { respons in
+                result = self.composeResult(fromResponse: respons)
+                semaphore.signal()
+            }
+        )
+        if useDefaultValidation {
             uploadResult.validate()
         }
-        
-        let gap: TimeInterval = request.timeout + self.semaphoreTimeoutGap
+        let gap = request.timeout + semaphoreTimeoutGap
         _ = semaphore.wait(timeout: DispatchTime.now() + gap)
         return result
     }
 
-    /**
-     Send an HTTP request asynchronously.
-
-     - parameter request: an HTTP request with HTTP verb, URL, headers, body etc.
-     - parameter callback: completion closure fired with a result of call.
-
-     - returns: cancellable HTTPCall object, with observable progress.
-     */
-    @discardableResult
-    public func send(request: HTTPRequest, callback: @escaping Callback) -> HTTPCall<DataRequest> {
-        let session:        Session        = request.session ?? self.session
+    /// Send an HTTP request asynchronously
+    /// - Parameters:
+    ///   - request: an HTTP request with HTTP verb, URL, headers, body etc.
+    ///   - callback: completion closure fired with a result of call
+    /// - Returns: cancellable HTTPCall object, with observable progress
+    @discardableResult public func send(
+        request: HTTPRequest,
+        callback: @escaping Callback
+    ) -> HTTPCall<DataRequest> {
+        let session = request.session ?? session
         let alamofireSession: Alamofire.Session = session.manager
-
-        request.with(interceptors: self.requestInterceptors)
-
-        let dataRequest: DataRequest =
-            alamofireSession
-                .request(request)
-                .responseHTTP(
-                    interceptors: request.responseInterceptors + self.responseInterceptors
-                ) { (response: ResultResponse) in
-                    callback(self.composeResult(fromResponse: response))
-                }
-
-        if self.useDefaultValidation {
-            dataRequest.validate()
-        }
-
-        return HTTPCall(request: dataRequest)
-    }
-
-    /**
-     Send an HTTP request asynchronously.
-
-     - parameter request: an `URLRequest` instance.
-     - parameter callback: completion closure fired with a result of call.
-
-     - returns: cancellable HTTPCall object, with observable progress.
-     */
-    @discardableResult
-    public func send(request: URLRequest, callback: @escaping Callback) -> HTTPCall<DataRequest> {
-        let session: Alamofire.Session = self.session.manager
-
-        let interceptedRequest: URLRequest =
-            self.requestInterceptors.reduce(request) { (
-                result: URLRequest,
-                interceptor: HTTPRequestInterceptor
-            ) -> URLRequest in
-                return interceptor.intercept(request: result)
+        request.with(interceptors: requestInterceptors)
+        let dataRequest = alamofireSession
+            .request(request)
+            .responseHTTP(
+                interceptors: request.responseInterceptors + responseInterceptors
+            ) { (response: ResultResponse) in
+                callback(self.composeResult(fromResponse: response))
             }
-
-        let dataRequest: DataRequest =
-            session
-                .request(interceptedRequest)
-                .responseHTTP(
-                    interceptors: self.responseInterceptors
-                ) { (response: ResultResponse) in
-                    callback(self.composeResult(fromResponse: response))
-                }
-
-        if self.useDefaultValidation {
+        if useDefaultValidation {
             dataRequest.validate()
         }
-
         return HTTPCall(request: dataRequest)
     }
 
-    /**
-     Send an HTTP request in order to upload file (asynchronously).
+    /// Send an HTTP request asynchronously
+    /// - Parameters:
+    ///   - request: an `URLRequest` instance
+    ///   - callback: completion closure fired with a result of call
+    /// - Returns: cancellable HTTPCall object, with observable progress
+    @discardableResult public func send(
+        request: URLRequest,
+        callback: @escaping Callback
+    ) -> HTTPCall<DataRequest> {
+        let session: Alamofire.Session = self.session.manager
+        let interceptedRequest = requestInterceptors.reduce(request) { (
+            result: URLRequest,
+            interceptor: HTTPRequestInterceptor
+        ) -> URLRequest in
+            return interceptor.intercept(request: result)
+        }
+        let dataRequest = session
+            .request(interceptedRequest)
+            .responseHTTP(
+                interceptors: responseInterceptors
+            ) { (response: ResultResponse) in
+                callback(self.composeResult(fromResponse: response))
+            }
+        if useDefaultValidation {
+            dataRequest.validate()
+        }
+        return HTTPCall(request: dataRequest)
+    }
 
-     - parameter request: an HTTP request with HTTP verb, URL, headers, file data etc.
-     - parameter multipartEncodingCallback: file data encoding completion closure.
-     - parameter callback: completion closure fired with a result of call.
-
-     - attention: JSON-encoded request parameters are ignored, plist-encoded parameters are put together with the body
-     form data, URL parameters go into URL as always.
-     */
+    /// Send an HTTP request in order to upload file (asynchronously)
+    /// - Parameters:
+    ///   - request: an HTTP request with HTTP verb, URL, headers, file data etc.
+    ///   - multipartEncodingCallback: file data encoding completion closure
+    ///   - callback: completion closure fired with a result of call
     open func send(
         request: FileUploadHTTPRequest,
         multipartEncodingCallback: MultipartEncodingCallback? = nil,
         callback: @escaping Callback
     ) {
-        let session:        Session        = request.session ?? self.session
+        let session = request.session ?? session
         let alamofireSession: Alamofire.Session = session.manager
-
-        request.with(interceptors: self.requestInterceptors)
-
+        request.with(interceptors: requestInterceptors)
         let uploadResult = alamofireSession.upload(
             multipartFormData: { (formData: MultipartFormData) in
                 formData.append(
@@ -348,7 +278,6 @@ open class HTTPTransport {
                     fileName: request.fileMultipart.fileName,
                     mimeType: request.fileMultipart.mimeType.value
                 )
-
                 request.parameters.forEach{
                     for (key, value) in $0.parameters {
                         if let value = value as? String {
@@ -356,144 +285,126 @@ open class HTTPTransport {
                         }
                     }
                 }
-                
-                
             },
             with: request
         )
-        uploadResult.responseHTTP(interceptors: request.responseInterceptors + self.responseInterceptors,
-                                  completionHandler: { response in
-                                    callback(self.composeResult(fromResponse: response))
-                                  })
-        
-        if self.useDefaultValidation {
+        uploadResult.responseHTTP(
+            interceptors: request.responseInterceptors + responseInterceptors,
+            completionHandler: { response in
+                callback(self.composeResult(fromResponse: response))
+            }
+        )
+        if useDefaultValidation {
             uploadResult.validate()
         }
     }
 
-    /**
-     Send an HTTP request with data.
-     
-     - parameter request: an HTTP request with HTTP verb, URL, headers, data etc.
-     
-     - returns: either `.success` with HTTP response or `.failure` with error object.
-     */
+    /// Send an HTTP request with data
+    /// - Parameter request: an HTTP request with HTTP verb, URL, headers, data etc.
+    /// - Returns: either `.success` with HTTP response or `.failure` with error object
     public func send(request: DataUploadHTTPRequest) -> Result {
         guard !Thread.isMainThread || allowNetworkingOnMainThread
         else {
             preconditionFailure("Networking on the main thread")
         }
-        
-        let session: Session               = request.session ?? self.session
+        let session = request.session ?? session
         let alamofireSession: Alamofire.Session = session.manager
-        
-        var result: Result               = Result.timeout
-        let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
-        
-        request.with(interceptors: self.requestInterceptors)
-        
+        var result = Result.timeout
+        let semaphore = DispatchSemaphore(value: 0)
+        request.with(interceptors: requestInterceptors)
         var urlRequest: URLRequest!
-        
         do {
             urlRequest = try request.asURLRequest()
         } catch let error {
             return .failure(error: error as NSError)
         }
-        
-        let interceptedRequest: URLRequest =
-            self.requestInterceptors.reduce(urlRequest) { (
-                result: URLRequest,
-                interceptor: HTTPRequestInterceptor
-            ) -> URLRequest in
-                return interceptor.intercept(request: result)
+        let interceptedRequest = requestInterceptors.reduce(urlRequest) { (
+            result: URLRequest,
+            interceptor: HTTPRequestInterceptor
+        ) -> URLRequest in
+            return interceptor.intercept(request: result)
+        }
+        let uploadRequest = alamofireSession
+            .upload(request.data, with: interceptedRequest)
+            .responseHTTP(
+                interceptors: request.responseInterceptors + responseInterceptors
+            ) { (response: ResultResponse) in
+                result = self.composeResult(fromResponse: response)
+                semaphore.signal()
             }
-        
-        let uploadRequest: UploadRequest =
-            alamofireSession
-                .upload(request.data, with: interceptedRequest)
-                .responseHTTP(
-                    interceptors: request.responseInterceptors + self.responseInterceptors
-                ) { (response: ResultResponse) in
-                    result = self.composeResult(fromResponse: response)
-                    semaphore.signal()
-                }
-        
-        if self.useDefaultValidation {
+        if useDefaultValidation {
             uploadRequest.validate()
         }
-        
-        let gap: TimeInterval = request.timeout + self.semaphoreTimeoutGap
+        let gap = request.timeout + semaphoreTimeoutGap
         _ = semaphore.wait(timeout: DispatchTime.now() + gap)
         return result
     }
-    
-    /**
-     Send an HTTP request with data asynchronously.
-     
-     - parameter data: data to send.
-     - parameter request: an `URLRequest` instance.
-     - parameter callback: completion closure fired with a result of call.
-     
-     - returns: cancellable HTTPCall object, with observable progress.
-     */
+
+    /// Send an HTTP request with data asynchronously
+    /// - Parameters:
+    ///   - data: data to send
+    ///   - request: an `URLRequest` instance
+    ///   - callback: completion closure fired with a result of call
+    /// - Returns: cancellable HTTPCall object, with observable progress
     public func send(data: Data, request: URLRequest, callback: @escaping Callback) -> HTTPCall<DataRequest> {
         let alamofireSession: Alamofire.Session = self.session.manager
-        
-        let interceptedRequest: URLRequest =
-            self.requestInterceptors.reduce(request) { (
-                result: URLRequest,
-                interceptor: HTTPRequestInterceptor
-            ) -> URLRequest in
-                return interceptor.intercept(request: result)
+        let interceptedRequest = requestInterceptors.reduce(request) { (
+            result: URLRequest,
+            interceptor: HTTPRequestInterceptor
+        ) -> URLRequest in
+            return interceptor.intercept(request: result)
         }
-        
-        let uploadRequest: UploadRequest =
-            alamofireSession
-                .upload(data, with: interceptedRequest)
-                .responseHTTP(
-                    interceptors: self.responseInterceptors
-                ) { (response: ResultResponse) in
-                    callback(self.composeResult(fromResponse: response))
-                }
-        
-        if self.useDefaultValidation {
+        let uploadRequest = alamofireSession
+            .upload(data, with: interceptedRequest)
+            .responseHTTP(
+                interceptors: responseInterceptors
+            ) { (response: ResultResponse) in
+                callback(self.composeResult(fromResponse: response))
+            }
+        if useDefaultValidation {
             uploadRequest.validate()
         }
-        
         return HTTPCall(request: uploadRequest)
     }
+
+    // MARK: - Result
     
-    /**
-     HTTP request result.
-     */
+    /// HTTP request result
     public enum Result {
+
+        // MARK: - Cases
+
         case success(response: HTTPResponse)
         case failure(error: NSError)
 
+        // MARK: - Properties
+
         public static var timeout: Result {
-            return Result.failure(error: NSError.timeout)
+            Result.failure(error: NSError.timeout)
         }
     }
 
-    /**
-     File data encoding result.
-     */
+    // MARK: - MultipartEncodingResult
+
+    /// File data encoding result
     public enum MultipartEncodingResult {
+
+        // MARK: - Cases
+
         case success(call: UploadHTTPCall)
         case failure(error: Error)
     }
 
-    /**
-     Callback closure returning result of HTTP call.
-     */
+    // MARK: - Aliases
+
+    /// Callback closure returning result of HTTP call
     public typealias Callback = (_ result: Result) -> ()
 
-    /**
-     Callback closure returning result of file data encoding into URLRequest.
-     */
+    /// Callback closure returning result of file data encoding into URLRequest
     public typealias MultipartEncodingCallback = (_ result: MultipartEncodingResult) -> ()
 }
 
+// MARK: - Private
 
 private extension HTTPTransport {
 
@@ -501,9 +412,11 @@ private extension HTTPTransport {
         security: Security,
         interceptor: HTTPTransportRetrier?
     ) -> Session {
-        let alamofireSession = Alamofire.Session(startRequestsImmediately: true,
-                                                 interceptor: interceptor,
-                                                 serverTrustManager: security.trustPolicyManager)
+        let alamofireSession = Alamofire.Session(
+            startRequestsImmediately: true,
+            interceptor: interceptor,
+            serverTrustManager: security.trustPolicyManager
+        )
         return Session(manager: alamofireSession)
     }
 
@@ -511,10 +424,8 @@ private extension HTTPTransport {
         switch response.result {
         case let .success(httpResponse):
             return Result.success(response: httpResponse)
-        
         case let .failure(afError):
             return Result.failure(error: afError.underlyingError as NSError? ?? afError as NSError)
         }
     }
-
 }

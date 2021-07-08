@@ -3,41 +3,36 @@
 //  HTTPTransport
 //
 //  Created by Jeorge Taflanidi
-//  Copyright © 28 Heisei RedMadRobot LLC. All rights reserved.
+//  Copyright © 2021 RedMadRobot LLC & Incetro Inc. All rights reserved.
 //
 
+// MARK: - FileMultipart
 
-import Foundation
-
-
-/**
- File data and metadata struct, helps multipart file serialization.
- */
+/// File data and metadata struct, helps multipart file serialization
 public struct FileMultipart {
 
-    /**
-     File data.
-     */
+    // MARK: - Properties
+
+    /// File data
     public let fileData: Data
 
-    /**
-     File name.
-     */
+    /// File name
     public let fileName: String
 
-    /**
-     File MIME type.
-     */
+    /// File MIME type
     public let mimeType: MIMEType
 
-    /**
-     Part name for multipart file serialization.
-     */
+    /// Part name for multipart file serialization
     public let partName: String
 
-    /**
-     Initializer.
-     */
+    // MARK: - Initializers
+
+    /// Default initializer
+    /// - Parameters:
+    ///   - fileData: file data
+    ///   - fileName: file name
+    ///   - mimeType: file MIME type
+    ///   - partName: part name of multipart file serialization
     public init(
         fileData: Data,
         fileName: String,
@@ -49,5 +44,4 @@ public struct FileMultipart {
         self.mimeType = mimeType
         self.partName = partName
     }
-
 }

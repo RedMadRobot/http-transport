@@ -3,33 +3,35 @@
 //  HTTPTransport
 //
 //  Created by Jeorge Taflanidi
-//  Copyright © 29 Heisei RedMadRobot LLC. All rights reserved.
+//  Copyright © 2021 RedMadRobot LLC & Incetro Inc. All rights reserved.
 //
 
+// MARK: - HTTPCookie
 
-import Foundation
-
-
-/**
- Convenience initializer for Foundation HTTPCookie.
- */
+/// Convenience initializer for Foundation HTTPCookie
 public extension HTTPCookie {
 
-    private static let stubURLAddress: String = "http://localhost"
-    private static let stubPath:       String = "/"
+    // MARK: - Properties
 
+    private static let stubURLAddress = "http://localhost"
+    private static let stubPath = "/"
+
+    // MARK: - Initializers
+
+    /// Convenience initializer
+    /// - Parameters:
+    ///   - name: key name
+    ///   - value: key value
     convenience init(
         name: String,
         value: String
     ) {
-        let cookieProperties: [HTTPCookiePropertyKey: String] = [
+        let cookieProperties = [
             HTTPCookiePropertyKey.name: name,
             HTTPCookiePropertyKey.value: value,
             HTTPCookiePropertyKey.path: HTTPCookie.stubPath,
             HTTPCookiePropertyKey.originURL: HTTPCookie.stubURLAddress,
         ]
-
         self.init(properties: cookieProperties)!
     }
-
 }

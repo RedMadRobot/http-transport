@@ -3,40 +3,38 @@
 //  HTTPTransport
 //
 //  Created by Jeorge Taflanidi
-//  Copyright © 2017 RedMadRobot LLC. All rights reserved.
+//  Copyright © 2021 RedMadRobot LLC & Incetro Inc. All rights reserved.
 //
 
-
 import Alamofire
-import Foundation
 
+// MARK: - FileUploadHTTPRequest
 
-/**
- File upload HTTP request.
- */
+/// File upload HTTP request
 open class FileUploadHTTPRequest: HTTPRequest {
 
-    /**
-     File data and metadata.
-     */
+    // MARK: - Proterties
+
+    /// File data and metadata
     public let fileMultipart: FileMultipart
 
-    /**
-     Initializer.
-     
-     - parameter httpMethod: HTTP verb; default is GET;
-     - parameter endpoint: URL endpoint; default is "";
-     - parameter headers: map of HTTP headers; default is empty map;
-     - parameter parameters: request parameters; default is empty list;
-     - parameter interceptors: request interceptors; default is empty array;
-     - parameter session: `Session` for this particular URLRequest; default is `None`, transport-defined;
-     - parameter timeout: `URLRequest` timeout;
-     - parameter fileData: file data;
-     - parameter partName: multipart part name for file data;
-     - parameter fileName: file name;
-     - parameter mimeType: file MIME type;
-     - parameter base: base `HTTPRequest` to inherit parameters from; default is `None`.
-     */
+    // MARK: - Initializers
+
+    /// Convenience initializer
+    /// - Parameters:
+    ///   - httpMethod: HTTP verb; default is GET
+    ///   - endpoint: URL endpoint; default is ""
+    ///   - headers: map of HTTP headers; default is empty map
+    ///   - parameters: request parameters; default is empty list
+    ///   - requestInterceptors: request interceptors; default is empty array
+    ///   - responseInterceptors: response interceptors; default is empty array
+    ///   - session: `Session` for this particular URLRequest; default is `None`, transport-defined
+    ///   - timeout: `URLRequest` timeout
+    ///   - fileData: file data
+    ///   - partName: multipart part name for file data
+    ///   - fileName: file name
+    ///   - mimeType: file MIME type
+    ///   - base: base `HTTPRequest` to inherit parameters from; default is `None`
     public convenience init(
         httpMethod: HTTPMethod = .get,
         endpoint: String = "",
@@ -66,19 +64,19 @@ open class FileUploadHTTPRequest: HTTPRequest {
         )
     }
 
-    /**
-     Initializer.
-     
-     - parameter httpMethod: HTTP verb; default is GET;
-     - parameter endpoint: URL endpoint; default is "";
-     - parameter headers: map of HTTP headers; default is empty map;
-     - parameter parameters: request parameters; default is empty list;
-     - parameter interceptors: request interceptors; default is empty array;
-     - parameter session: `Session` for this particular URLRequest; default is `None`, transport-defined;
-     - parameter timeout: `URLRequest` timeout;
-     - parameter file: file data and metadata;
-     - parameter base: base `HTTPRequest` to inherit parameters from; default is `None`.
-     */
+    /// Default initializer
+    /// - Parameters:
+    ///   - httpMethod: HTTP verb; default is GET
+    ///   - endpoint: URL endpoint; default is ""
+    ///   - headers: map of HTTP headers; default is empty map
+    ///   - parameters: request parameters; default is empty list
+    ///   - requestInterceptors: request interceptors; default is empty array
+    ///   - responseInterceptors: response interceptors; default is empty array
+    ///   - session: `Session` for this particular URLRequest; default is `None`, transport-defined
+    ///   - timeout: `URLRequest` timeout
+    ///   - file: file data and metadata
+    ///   - partName: multipart part name for file data
+    ///   - base: base `HTTPRequest` to inherit parameters from; default is `None`
     public init(
         httpMethod: HTTPMethod = HTTPMethod.get,
         endpoint: String = "",
@@ -104,5 +102,4 @@ open class FileUploadHTTPRequest: HTTPRequest {
             base: base
         )
     }
-
 }

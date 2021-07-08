@@ -3,43 +3,33 @@
 //  HTTPTransport
 //
 //  Created by Jeorge Taflanidi
-//  Copyright (c) 2017 RedMadRobot LLC. All rights reserved.
+//  Copyright © 2021 RedMadRobot LLC & Incetro Inc. All rights reserved.
 //
 
+// MARK: - MIMEType
 
-import Foundation
-
-
-/**
- MIME type representation.
-
- Allows to determine MIME type based on file extension.
- */
+/// MIME type representation
+/// Allows to determine MIME type based on file extension
 public struct MIMEType {
+
+    // MARK: - Properties
 
     private static let defaultMIMEType: String = "application/octet-stream"
 
-    /**
-     Get actual MIME type.
-
-     - returns: Strings like "image/png". Default value is "application/octet-stream".
-     */
+    /// Get actual MIME type
+    /// - returns: Strings like "image/png". Default value is "application/octet-stream"
     public let value: String
 
-    /**
-     Init with file path.
+    // MARK: - Initializers
 
-     - parameter path: file path, e.g. "image.jpeg" or "/Users/me/file.txt"
-     */
+    /// Itializer with file path
+    /// - Parameter path: file path, e.g. "image.jpeg" or "/Users/me/file.txt"
     public init(path: String) {
         self.init(fileExtension: URL(fileURLWithPath: path).pathExtension)
     }
 
-    /**
-     Init with file extension.
-
-     - parameter fileExtension: file extension, e.g. "jpeg"
-     */
+    /// Itializer with file extension
+    /// - Parameter fileExtension: file extension, e.g. "jpeg"
     public init(fileExtension: String) {
         if fileExtension.isEmpty {
             self.init(value: MIMEType.defaultMIMEType)
@@ -48,16 +38,13 @@ public struct MIMEType {
         }
     }
 
-    /**
-     Init manually.
-
-     - parameter value: a string like "image/png".
-     */
+    /// Itializer manually
+    /// - Parameter value: a string like "image/png"
     public init(value: String) {
         self.value = value
     }
 
-    private static let mimeTypes: [String: String] = [
+    private static let mimeTypes = [
         "html": "text/html",
         "htm": "text/html",
         "shtml": "text/html",
@@ -162,5 +149,4 @@ public struct MIMEType {
         "wmv": "video/x-ms-wmv",
         "avi": "video/x-msvideo"
     ]
-
 }

@@ -3,35 +3,35 @@
 //  soglasie
 //
 //  Created by Ivan Vavilov on 9/12/17.
-//  Copyright © 2017 RedMadRobot. All rights reserved.
+//  Copyright © 2021 RedMadRobot LLC & Incetro Inc. All rights reserved.
 //
 
 import Alamofire
 
+// MARK: - DataUploadHTTPRequest
 
-/**
- Data upload HTTP request.
- */
+/// Data upload HTTP request
 open class DataUploadHTTPRequest: HTTPRequest {
 
-    /**
-     File data.
-     */
+    // MARK: - Properties
+
+    /// File data
     public let data: Data
 
-    /**
-     Initializer.
-     
-     - parameter httpMethod: HTTP verb; default is GET;
-     - parameter endpoint: URL endpoint; default is "";
-     - parameter headers: map of HTTP headers; default is empty map;
-     - parameter parameters: request parameters; default is empty list;
-     - parameter interceptors: request interceptors; default is empty array;
-     - parameter session: `Session` for this particular URLRequest; default is `None`, transport-defined;
-     - parameter timeout: `URLRequest` timeout;
-     - parameter base: base `HTTPRequest` to inherit parameters from; default is `None`.
-     - parameter data: file data;
-     */
+    // MARK: - Initializers
+
+    /// Default initializer
+    /// - Parameters:
+    ///   - httpMethod: HTTP verb; default is GET
+    ///   - endpoint: URL endpoint; default is ""
+    ///   - headers: map of HTTP headers; default is empty map
+    ///   - parameters: request parameters; default is empty list
+    ///   - requestInterceptors: request interceptors; default is empty array
+    ///   - responseInterceptors: response interceptors; default is empty array
+    ///   - session: `Session` for this particular URLRequest; default is `None`, transport-defined
+    ///   - timeout: `URLRequest` timeout
+    ///   - base: base `HTTPRequest` to inherit parameters from; default is `None`
+    ///   - data: file data
     public init(
         httpMethod: HTTPRequest.HTTPMethod = HTTPMethod.post,
         endpoint: String = "",
@@ -57,5 +57,4 @@ open class DataUploadHTTPRequest: HTTPRequest {
             base: base
         )
     }
-
 }

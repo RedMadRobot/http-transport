@@ -3,12 +3,13 @@
 //  HTTPTransport
 //
 //  Created by by Richard Hodgkins on 26/03/2017
-//  Copyright (c) 2017 Richard Hodgkins. All rights reserved.
+//  Copyright (c) 2021 Richard Hodgkins & Incetro Inc. All rights reserved.
 //
 
-import Foundation
+// MARK: - HTTPStatusCode
 
-/// HTTP status codes as per the [IANA HTTP status code registry](http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml).
+/// HTTP status codes as per the [IANA HTTP status code registry]
+/// (http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml).
 ///
 /// Last updated: Wed, 08 Mar 2017 00:07:04 GMT
 ///
@@ -407,32 +408,32 @@ public extension HTTPStatusCode {
 
     /// Informational - Request received, continuing process.
     var isInformational: Bool {
-        return isIn(range: 100...199)
+        isIn(range: 100...199)
     }
 
     /// Success - The action was successfully received, understood, and accepted.
     var isSuccess:       Bool {
-        return isIn(range: 200...299)
+        isIn(range: 200...299)
     }
 
     /// Redirection - Further action must be taken in order to complete the request.
     var isRedirection:   Bool {
-        return isIn(range: 300...399)
+        isIn(range: 300...399)
     }
 
     /// Client Error - The request contains bad syntax or cannot be fulfilled.
     var isClientError:   Bool {
-        return isIn(range: 400...499)
+        isIn(range: 400...499)
     }
 
     /// Server Error - The server failed to fulfill an apparently valid request.
     var isServerError:   Bool {
-        return isIn(range: 500...599)
+        isIn(range: 500...599)
     }
 
     /// - returns: `true` if the status code is in the provided range, false otherwise.
     private func isIn(range: ClosedRange<HTTPStatusCode.RawValue>) -> Bool {
-        return range.contains(rawValue)
+        range.contains(rawValue)
     }
 }
 
@@ -448,6 +449,7 @@ extension HTTPStatusCode {
 // MARK: - Printing (CustomStringConvertible)
 
 extension HTTPStatusCode: CustomStringConvertible {
+
     public var description: String {
         "\(rawValue) - \(localizedReasonPhrase)"
     }
@@ -456,6 +458,7 @@ extension HTTPStatusCode: CustomStringConvertible {
 // MARK: - Printing (CustomDebugStringConvertible)
 
 extension HTTPStatusCode: CustomDebugStringConvertible {
+
     public var debugDescription: String {
         "HTTPStatusCode: \(description)"
     }
@@ -465,7 +468,10 @@ extension HTTPStatusCode: CustomDebugStringConvertible {
 
 public extension HTTPStatusCode {
 
-    /// Obtains a possible status code from an optional HTTP URL response.
+    // MARK: - Initializers
+
+    /// Obtains a possible status code from an optional HTTP URL response
+    /// - Parameter httpURLResponse: http URL response
     init?(httpURLResponse: HTTPURLResponse?) {
         guard let statusCodeValue = httpURLResponse?.statusCode
         else {
@@ -474,13 +480,15 @@ public extension HTTPStatusCode {
         self.init(statusCodeValue)
     }
 
-    /// Obtains a status code from an HTTP URL response.
+    /// Obtains a status code from an HTTP URL response
+    /// - Parameter httpURLResponse: http URL response
     init(httpURLResponse: HTTPURLResponse) {
         let statusCodeValue = httpURLResponse.statusCode
         self.init(rawValue: statusCodeValue)!
     }
 
     /// This is declared as it's not automatically picked up by the complier for the above init
+    /// - Parameter rawValue: raw value of status code
     init?(_ rawValue: Int) {
         guard let value = HTTPStatusCode(rawValue: rawValue)
         else {
